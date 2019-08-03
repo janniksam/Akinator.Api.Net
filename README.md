@@ -1,5 +1,8 @@
 # Akinator Api for .NET Core
 
+[![Build status master](https://ci.appveyor.com/api/projects/status/al1pxhaokdi8ymqe?svg=true&passingText=master%20-%20passing&failingText=master%20-%20failing&pendingText=master%20-%20pending)](https://ci.appveyor.com/project/janniksam/Akinator.Api.Net) 
+[![NuGet version](https://badge.fury.io/nu/Akinator.Api.Net.svg)](https://badge.fury.io/nu/Akinator.Api.Net)
+
 - Inspired by: https://github.com/davidsl4/AkiNet (not working anymore)
 - Ported from: https://github.com/jgoralcz/aki-api/ (NodeJS implementation)
 
