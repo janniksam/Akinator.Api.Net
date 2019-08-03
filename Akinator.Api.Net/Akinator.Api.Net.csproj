@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Title>Akinator API .NET</Title>
+    <Description>Akinator API written .NET Core</Description>
+    <Authors>janniksam</Authors>
+    <Company>janniksam</Company>
+    <PackageProjectUrl>https://github.com/janniksam/Akinator.Api.Net</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Copyright>Copyright 2019 © janniksam</Copyright>
+    <PackageLicenseUrl>https://github.com/janniksam/Akinator.Api.Net/blob/master/LICENSE</PackageLicenseUrl>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+</Project>
