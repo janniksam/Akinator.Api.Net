@@ -1,0 +1,40 @@
+image: Visual Studio 2017
+configuration: Release
+platform: Any CPU
+
+skip_commits:
+  files:
+    - '*.md'
+
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{build}'
+  informational_version: '{version}'
+before_build:
+- cmd: dotnet restore Akinator.Api.Net.sln
+build:
+  verbosity: minimal
+after_build:
+- cmd: dotnet pack Akinator.Api.Net\Akinator.Api.Net.csproj
+artifacts:
+- path: '**\*.nupkg'
+deploy: off
+
+for:
+-
+  branches:
+    only:
+      - dev
+
+  dotnet_csproj:
+    patch: true
+    file: '**\*.csproj'
+    version: '{version}-alpha'
+    package_version: '{version}-alpha'
+    assembly_version: '{version}'
+    file_version: '{version}'
+    informational_version: '{version} (pre-release)'
