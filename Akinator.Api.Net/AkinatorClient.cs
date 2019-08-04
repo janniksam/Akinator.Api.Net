@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Akinator.Api.Net.Enumerations;
 using Akinator.Api.Net.Model;
@@ -12,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace Akinator.Api.Net
 {
-    public class AkinatorClient : IDisposable
+    public class AkinatorClient : IAkinatorClient
     {
         private readonly Regex m_regexSession = new Regex("var uid_ext_session = '(.*)'\\;\\n.*var frontaddr = '(.*)'\\;");
         private readonly Regex m_regexStartGameResult = new Regex(@"^jQuery331023608747682107778_\d+\((.+)\)$");
@@ -43,18 +44,17 @@ namespace Akinator.Api.Net
             }
         }
 
-        /// <summary>
-        /// Starts a new Akinator game
-        /// </summary>
-        /// <returns>The first question</returns>
-        public async Task<AkinatorQuestion> StartNewGame()
+        public async Task<AkinatorQuestion> StartNewGame(CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var apiKey = await GetSession().ConfigureAwait(false);
             var url = AkiUrlBuilder.NewGame(apiKey, m_usedLanguage, m_usedServerType);
             
-            var response = await m_webClient.GetStringAsync(url).ConfigureAwait(false);
+            var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync();
 
-            var match = m_regexStartGameResult.Match(response);
+            var match = m_regexStartGameResult.Match(content);
             if (!match.Success && match.Groups.Count != 2)
             {
                 throw new InvalidCastException($"Invalid result received from Akinator. Result was {response}");
@@ -72,18 +72,16 @@ namespace Akinator.Api.Net
             return ToAkinatorQuestion(result.Parameters.StepInformation);
         }
 
-        /// <summary>
-        /// Answers the question given previously by Akinator
-        /// </summary>
-        /// <param name="answer">The answer you want to give</param>
-        /// <returns>The next question</returns>
-        public async Task<AkinatorQuestion> Answer(AnswerOptions answer)
+        public async Task<AkinatorQuestion> Answer(AnswerOptions answer, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var url = AkiUrlBuilder.Answer(BuildAnswerRequest(answer), m_usedLanguage, m_usedServerType);
 
-            var response = await m_webClient.GetStringAsync(url).ConfigureAwait(false);
+            var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync();
 
-            var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(response,
+            var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(content,
                 new JsonSerializerSettings()
                 {
                     MissingMemberHandling = MissingMemberHandling.Ignore
@@ -92,13 +90,16 @@ namespace Akinator.Api.Net
             m_step = result.Parameters.Step;
             return ToAkinatorQuestion(result.Parameters);
         }
-
-        public async Task<AkinatorGuess[]> GetGuess()
+        
+        public async Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken)
         {
-            var url = AkiUrlBuilder.GetGuessUrl(BuildGuessRequest(), m_usedLanguage, m_usedServerType);
-            var response = await m_webClient.GetStringAsync(url).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
 
-            var result = JsonConvert.DeserializeObject<BaseResponse<Guess>>(response,
+            var url = AkiUrlBuilder.GetGuessUrl(BuildGuessRequest(), m_usedLanguage, m_usedServerType);
+            var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<BaseResponse<Guess>>(content,
                 new JsonSerializerSettings()
                 {
                     MissingMemberHandling = MissingMemberHandling.Ignore
@@ -113,6 +114,12 @@ namespace Akinator.Api.Net
                     Probabilty = p.Probabilty
                 }).ToArray();
         }
+
+        public Task<AkinatorQuestion> StartNewGame() => StartNewGame(CancellationToken.None);
+
+        public Task<AkinatorQuestion> Answer(AnswerOptions answer) => Answer(answer, CancellationToken.None);
+
+        public Task<AkinatorGuess[]> GetGuess() => GetGuess(CancellationToken.None);
 
         public bool GuessIsDue(AkinatorQuestion question)
         {

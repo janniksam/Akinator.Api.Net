@@ -20,7 +20,6 @@ All the other servers are coming later or if someone requests it. They are not h
 ## Known issues
 
 - Lack of supported servers and languages
-- CancellationToken support not given at the moment
 - The GuessIsDue-method, which decides, when Akinator is ready to guess, needs to be improved significantly
 
 ## Basic usage

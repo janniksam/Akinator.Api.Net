@@ -19,7 +19,7 @@ namespace Akinator.Api.Net.Example
         {
             Console.WriteLine("Starting session...");
 
-            using (var client = new AkinatorClient(Language.German, ServerType.Person))
+            using (IAkinatorClient client = new AkinatorClient(Language.German, ServerType.Person))
             {
                 var question = await client.StartNewGame();
                 var answer = GetAnswerFor(question);
@@ -88,8 +88,6 @@ namespace Akinator.Api.Net.Example
             {
                 myDic.Add((int)foo, foo.ToString());
             }
-
-            return myDic;
 
             return myDic;
         }
