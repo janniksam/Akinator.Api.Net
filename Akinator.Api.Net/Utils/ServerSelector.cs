@@ -23,6 +23,30 @@ namespace Akinator.Api.Net.Utils
                     {
                         new Server(ServerType.Person, "srv13.akinator.com:9196/ws")
                     }
+                },
+                {
+                    Language.Arabic, new[]
+                    {
+                        new Server(ServerType.Person, "srv12.akinator.com:9187/ws")
+                    }
+                },
+                {
+                    Language.Italian, new[]
+                    {
+                        new Server(ServerType.Person, "srv9.akinator.com:9214/ws")
+                    }
+                },
+                {
+                    Language.Spanish, new[]
+                    {
+                        new Server(ServerType.Person, "srv13.akinator.com:9257/ws")
+                    }
+                },
+                {
+                    Language.Russian, new[]
+                    {
+                        new Server(ServerType.Person, "srv14.akinator.com:9286/ws")
+                    }
                 }
             };
 

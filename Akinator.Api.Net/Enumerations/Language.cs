@@ -4,5 +4,9 @@
     {
         English,
         German,
+        Arabic,
+        Italian,
+        Spanish,
+        Russian,
     }
 }
