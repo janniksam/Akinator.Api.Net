@@ -8,18 +8,24 @@ This is an improved async version of the Akinator API, written for .NET Standard
 - Inspired by: https://github.com/davidsl4/AkiNet (not working anymore)
 - Ported from: https://github.com/jgoralcz/aki-api/ (NodeJS implementation)
 
-## WIP
+## Supported servers
 
 This is a WIP project and in a very early stage. Currently only some servers are supported:
 
-- the german person & animal servers
-- the english person server
+| Language | Servers |
+| --- | --- |
+| Arabic | Person |
+| English | Animal, Objects, Person |
+| German | Person |
+| Italian | Animal, Person |
+| Russian | Person |
+| Spanish | Animal, Person |
 
-All the other servers are coming later or if someone requests it. They are not hard to add anyways.
+All the other servers are coming later or if someone requests it. They are not hard to add anyways, so feel free to make a pull request.
 
 ## Known issues
 
-- Lack of supported servers and languages
+- Not all servers are currently supported.
 - The GuessIsDue-method, which decides, when Akinator is ready to guess, needs to be improved significantly
 
 ## Basic usage
