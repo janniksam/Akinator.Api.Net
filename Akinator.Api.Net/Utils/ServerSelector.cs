@@ -21,7 +21,9 @@ namespace Akinator.Api.Net.Utils
                 {
                     Language.English, new[]
                     {
-                        new Server(ServerType.Person, "srv13.akinator.com:9196/ws")
+                        new Server(ServerType.Person, "srv13.akinator.com:9196/ws"),
+                        new Server(ServerType.Object, "srv14.akinator.com:9293/ws"),
+                        new Server(ServerType.Animal, "srv13.akinator.com:9287/ws")
                     }
                 },
                 {
@@ -33,13 +35,15 @@ namespace Akinator.Api.Net.Utils
                 {
                     Language.Italian, new[]
                     {
-                        new Server(ServerType.Person, "srv9.akinator.com:9214/ws")
+                        new Server(ServerType.Person, "srv9.akinator.com:9214/ws"),
+                        new Server(ServerType.Animal, "srv9.akinator.com:9261/ws")
                     }
                 },
                 {
                     Language.Spanish, new[]
                     {
-                        new Server(ServerType.Person, "srv13.akinator.com:9257/ws")
+                        new Server(ServerType.Person, "srv13.akinator.com:9194/ws"),
+                        new Server(ServerType.Animal, "srv13.akinator.com:9257/ws")
                     }
                 },
                 {
