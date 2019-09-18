@@ -53,10 +53,6 @@ namespace Akinator.Api.Net.Utils
             Language language,
             ServerType serverType)
         {
-            //if (request == null)
-            //{
-                //throw new ArgumentNullException(nameof(request));
-            //}
             var server = ServerSelector.GetServerFor(language, serverType);
             if (string.IsNullOrEmpty(server))
             {
