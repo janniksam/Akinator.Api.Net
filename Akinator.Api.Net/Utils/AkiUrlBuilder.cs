@@ -46,6 +46,23 @@ namespace Akinator.Api.Net.Utils
             return url;
         }
 
+        public static string UndoAnswer(
+            string Session,
+            string Signature,
+            int Step,
+            Language language,
+            ServerType serverType)
+        {
+            var server = ServerSelector.GetServerFor(language, serverType);
+            if (string.IsNullOrEmpty(server))
+            {
+                throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
+            }
+
+            var url = $"https://{server}/cancel_answer?session={Session}&signature={Signature}&step={Step}&answer=-1";
+            return url;
+        }
+
         public static string GetGuessUrl(
             GuessRequest request,
             Language language, 
