@@ -118,6 +118,87 @@ namespace Akinator.Api.Net.Tests
                 }
             }
         }
+        
+        [TestMethod]
+        public async Task SimpleWorkflowTest_French_Animal()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.France, ServerType.Animal))
+            {
+                var question = await client.StartNewGame();
+                while (true)
+                {
+                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
+                    if (!client.GuessIsDue(nextQuestion))
+                    {
+                        continue;
+                    }
+
+                    var guess = await client.GetGuess();
+                    if (!guess.Any())
+                    {
+                        Assert.Fail("No guess was found");
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task SimpleWorkflowTest_French_Object()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.France, ServerType.Animal))
+            {
+                var question = await client.StartNewGame();
+                while (true)
+                {
+                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
+                    if (!client.GuessIsDue(nextQuestion))
+                    {
+                        continue;
+                    }
+
+                    var guess = await client.GetGuess();
+                    if (!guess.Any())
+                    {
+                        Assert.Fail("No guess was found");
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task SimpleWorkflowTest_French_Person()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.France, ServerType.Person))
+            {
+                var question = await client.StartNewGame();
+                while (true)
+                {
+                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
+                    if (!client.GuessIsDue(nextQuestion))
+                    {
+                        continue;
+                    }
+
+                    var guess = await client.GetGuess();
+                    if (!guess.Any())
+                    {
+                        Assert.Fail("No guess was found");
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
 
         [TestMethod]
         public async Task SimpleWorkflowTest_German_Person()
@@ -349,87 +430,6 @@ namespace Akinator.Api.Net.Tests
             {
                 var question = await newClient.Answer(AnswerOptions.Yes);
                 Assert.AreEqual(2, question.Step);
-            }
-        }
-      
-      [TestMethod]
-        public async Task SimpleWorkflowTest_France_Animal()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.France, ServerType.Animal))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_France_Object()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.France, ServerType.Animal))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_France_Person()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.France, ServerType.Person))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
             }
         }
     }
