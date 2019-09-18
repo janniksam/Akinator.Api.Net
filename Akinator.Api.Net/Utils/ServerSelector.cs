@@ -29,7 +29,7 @@ namespace Akinator.Api.Net.Utils
                 {
                     Language.Arabic, new[]
                     {
-                        new Server(ServerType.Person, "srv12.akinator.com:9187/ws")
+                        new Server(ServerType.Person, "srv2.akinator.com:9155/ws")
                     }
                 },
                 {
@@ -44,6 +44,14 @@ namespace Akinator.Api.Net.Utils
                     {
                         new Server(ServerType.Person, "srv13.akinator.com:9194/ws"),
                         new Server(ServerType.Animal, "srv13.akinator.com:9257/ws")
+                    }
+                },
+                {
+                    Language.France, new[]
+                    {
+                        new Server(ServerType.Person, "srv3.akinator.com:9217/ws"),
+                        new Server(ServerType.Object, "srv3.akinator.com:9218/ws"),
+                        new Server(ServerType.Animal, "srv3.akinator.com:9259/ws")
                     }
                 },
                 {
