@@ -57,7 +57,7 @@ namespace Akinator.Api.Net.Utils
                 {
                     Language.Russian, new[]
                     {
-                        new Server(ServerType.Person, "srv14.akinator.com:9286/ws")
+                        new Server(ServerType.Person, "srv12.akinator.com:9190/ws")
                     }
                 }
             };
