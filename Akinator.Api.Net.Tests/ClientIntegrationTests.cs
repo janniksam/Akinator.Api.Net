@@ -396,6 +396,23 @@ namespace Akinator.Api.Net.Tests
 
         [TestMethod]
         [ExpectedException(typeof(OperationCanceledException))]
+        public async Task UndoAnswerThrowsExceptionOnCancelled()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            {
+                var src = new CancellationTokenSource();
+                var cancellationToken = src.Token;
+                src.Cancel();
+
+                await client.UndoAnswer(cancellationToken);
+            }
+
+            Assert.Fail("No exception was thrown");
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
         public async Task GetGuessThrowsExceptionOnCancelled()
         {
             using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
@@ -430,6 +447,27 @@ namespace Akinator.Api.Net.Tests
             {
                 var question = await newClient.Answer(AnswerOptions.Yes);
                 Assert.AreEqual(2, question.Step);
+            }
+        }
+
+
+        [TestMethod]
+        public async Task UndoWorksAsExpected()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            {
+                var questionStart = await client.StartNewGame();
+                Assert.AreEqual(0, questionStart.Step);
+
+                var question1 = await client.Answer(AnswerOptions.Yes);
+                Assert.AreEqual(1, question1.Step);
+
+                var question2 = await client.Answer(AnswerOptions.Yes);
+                Assert.AreEqual(2, question2.Step);
+
+                var questionPrevious = await client.UndoAnswer();
+                Assert.AreEqual(1, questionPrevious.Step);
+                Assert.AreEqual(question1.Text, questionPrevious.Text);
             }
         }
     }

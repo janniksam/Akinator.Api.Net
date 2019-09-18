@@ -29,6 +29,19 @@ namespace Akinator.Api.Net
         Task<AkinatorQuestion> Answer(AnswerOptions answer);
 
         /// <summary>
+        /// Undoes the previously given answer
+        /// </summary>
+        /// <returns>The previous question</returns>
+        Task<AkinatorQuestion> UndoAnswer();
+
+        /// <summary>
+        /// Undoes the previously given answer
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <returns>The previous question</returns>
+        Task<AkinatorQuestion> UndoAnswer(CancellationToken cancellationToken);
+
+        /// <summary>
         /// Answers the question given previously by Akinator
         /// </summary>
         /// <param name="answer">The answer you want to give</param>

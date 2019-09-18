@@ -18,15 +18,6 @@ namespace Akinator.Api.Net.Utils
                 $"https://{server}/new_session?partner=1&callback=jQuery331023608747682107778_{GetTime()}&player=website-desktop&uid_ext_session={apiKey.SessionUid}&frontaddr={apiKey.FrontAdress.UrlEncode()}&constraint=ETAT%3C%3E%27AV%27&&constraint=ETAT<>'AV'";
         }
 
-        private static long GetTime()
-        {
-            long retval = 0;
-            var st = new DateTime(1970, 1, 1);
-            var t = (DateTime.Now.ToUniversalTime() - st);
-            retval = (long)(t.TotalMilliseconds + 0.5);
-            return retval;
-        }
-
         public static string Answer(
             AnswerRequest request,
             Language language, 
@@ -43,6 +34,23 @@ namespace Akinator.Api.Net.Utils
             }
 
             var url = $"https://{server}/answer?session={request.Session}&signature={request.Signature}&step={request.Step}&answer={(int)request.Choice}";
+            return url;
+        }
+
+        public static string UndoAnswer(
+            string session,
+            string signature,
+            int step,
+            Language language,
+            ServerType serverType)
+        {
+            var server = ServerSelector.GetServerFor(language, serverType);
+            if (string.IsNullOrEmpty(server))
+            {
+                throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
+            }
+
+            var url = $"https://{server}/cancel_answer?session={session}&signature={signature}&step={step}&answer=-1";
             return url;
         }
 
@@ -63,6 +71,15 @@ namespace Akinator.Api.Net.Utils
 
             var url = $"https://{server}/list?session={request.Session}&signature={request.Signature}&step={request.Step}";
             return url;
+        }
+
+        private static long GetTime()
+        {
+            long retval = 0;
+            var st = new DateTime(1970, 1, 1);
+            var t = (DateTime.Now.ToUniversalTime() - st);
+            retval = (long)(t.TotalMilliseconds + 0.5);
+            return retval;
         }
     }
 }
