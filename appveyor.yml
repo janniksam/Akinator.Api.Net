@@ -2,11 +2,9 @@ image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 
-# only increment the build number when building master
 pull_requests:
   do_not_increment_build_number: true
-# don't build "feature" branches
-skip_branch_with_pr: true
+
 branches:
   only:
     - master
@@ -32,18 +30,3 @@ after_build:
 artifacts:
 - path: '**\*.nupkg'
 deploy: off
-
-for:
--
-  branches:
-    only:
-      - dev
-
-  dotnet_csproj:
-    patch: true
-    file: '**\*.csproj'
-    version: '{version}-alpha'
-    package_version: '{version}-alpha'
-    assembly_version: '{version}'
-    file_version: '{version}'
-    informational_version: '{version} (pre-release)'
