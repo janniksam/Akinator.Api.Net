@@ -33,17 +33,6 @@ namespace Akinator.Api.Net
             Attach(existingSession);
         }
 
-        private void Attach(AkinatorUserSession existingSession)
-        {
-            if (existingSession != null)
-            {
-                m_step = existingSession.Step;
-                m_lastGuessStep = existingSession.LastGuessStep;
-                m_session = existingSession.Session;
-                m_signature = existingSession.Signature;
-            }
-        }
-
         public async Task<AkinatorQuestion> StartNewGame(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -61,7 +50,7 @@ namespace Akinator.Api.Net
             }
 
             var result = JsonConvert.DeserializeObject<BaseResponse<NewGameParameters>>(match.Groups[1].Value,
-                new JsonSerializerSettings()
+                new JsonSerializerSettings
                 {
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 });
@@ -82,7 +71,7 @@ namespace Akinator.Api.Net
             var content = await response.Content.ReadAsStringAsync();
 
             var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(content,
-                new JsonSerializerSettings()
+                new JsonSerializerSettings
                 {
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 });
@@ -95,15 +84,20 @@ namespace Akinator.Api.Net
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            if (m_step == 0)
+            {
+                return null;
+            }
+                
             var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
 
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync();
 
             var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(content,
-                new JsonSerializerSettings()
+                new JsonSerializerSettings
                 {
-                    MissingMemberHandling = MissingMemberHandling.Ignore
+                   MissingMemberHandling = MissingMemberHandling.Ignore
                 });
 
             m_step = result.Parameters.Step;
@@ -119,7 +113,7 @@ namespace Akinator.Api.Net
             var content = await response.Content.ReadAsStringAsync();
 
             var result = JsonConvert.DeserializeObject<BaseResponse<Guess>>(content,
-                new JsonSerializerSettings()
+                new JsonSerializerSettings
                 {
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 });
@@ -188,6 +182,17 @@ namespace Akinator.Api.Net
 
         private AnswerRequest BuildAnswerRequest(AnswerOptions choice) =>
             new AnswerRequest(choice, m_step, m_session, m_signature);
+
+        private void Attach(AkinatorUserSession existingSession)
+        {
+            if (existingSession != null)
+            {
+                m_step = existingSession.Step;
+                m_lastGuessStep = existingSession.LastGuessStep;
+                m_session = existingSession.Session;
+                m_signature = existingSession.Signature;
+            }
+        }
 
         public void Dispose()
         {
