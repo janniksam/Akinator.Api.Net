@@ -122,7 +122,7 @@ namespace Akinator.Api.Net.Tests
         [TestMethod]
         public async Task SimpleWorkflowTest_French_Animal()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.France, ServerType.Animal))
+            using (IAkinatorClient client = new AkinatorClient(Language.French, ServerType.Animal))
             {
                 var question = await client.StartNewGame();
                 while (true)
@@ -149,7 +149,7 @@ namespace Akinator.Api.Net.Tests
         [TestMethod]
         public async Task SimpleWorkflowTest_French_Object()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.France, ServerType.Animal))
+            using (IAkinatorClient client = new AkinatorClient(Language.French, ServerType.Animal))
             {
                 var question = await client.StartNewGame();
                 while (true)
@@ -176,7 +176,7 @@ namespace Akinator.Api.Net.Tests
         [TestMethod]
         public async Task SimpleWorkflowTest_French_Person()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.France, ServerType.Person))
+            using (IAkinatorClient client = new AkinatorClient(Language.French, ServerType.Person))
             {
                 var question = await client.StartNewGame();
                 while (true)
