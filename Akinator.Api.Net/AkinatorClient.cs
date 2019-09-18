@@ -96,7 +96,7 @@ namespace Akinator.Api.Net
             cancellationToken.ThrowIfCancellationRequested();
             
             if (m_step == 0)
-                return;
+                return null;
                 
             var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
 
