@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Akinator.Api.Net.Enumerations;
 using Akinator.Api.Net.Model;
-using Akinator.Api.Net.Utils;
 
 namespace Akinator.Api.Net.Example
 {
