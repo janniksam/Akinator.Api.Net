@@ -8,6 +8,5 @@
         Italian,
         Spanish,
         Russian,
-        French,
     }
 }
