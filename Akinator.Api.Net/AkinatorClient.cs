@@ -93,10 +93,10 @@ namespace Akinator.Api.Net
 
         public async Task<AkinatorQuestion> UndoAnswer(CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             if (m_step != 0)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
                 var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
 
                 var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
