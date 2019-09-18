@@ -16,6 +16,7 @@ This is a WIP project and in a very early stage. Currently only some servers are
 | --- | --- |
 | Arabic | Person |
 | English | Animal, Object, Person |
+| Frensh | Animal, Object, Person |
 | German | Person |
 | Italian | Animal, Person |
 | Russian | Person |
