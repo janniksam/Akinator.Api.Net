@@ -90,26 +90,7 @@ namespace Akinator.Api.Net
             m_step = result.Parameters.Step;
             return ToAkinatorQuestion(result.Parameters);
         }
-
-        public async Task<AkinatorQuestion> UndoAnswer(CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
-
-            var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-            var content = await response.Content.ReadAsStringAsync();
-
-            var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(content,
-                new JsonSerializerSettings()
-                {
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                });
-
-            m_step = result.Parameters.Step;
-            return ToAkinatorQuestion(result.Parameters);
-        }
-
+        
         public async Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -137,8 +118,6 @@ namespace Akinator.Api.Net
         public Task<AkinatorQuestion> StartNewGame() => StartNewGame(CancellationToken.None);
 
         public Task<AkinatorQuestion> Answer(AnswerOptions answer) => Answer(answer, CancellationToken.None);
-
-        public Task<AkinatorQuestion> UndoAnswer() => UndoAnswer(CancellationToken.None);
 
         public Task<AkinatorGuess[]> GetGuess() => GetGuess(CancellationToken.None);
 
