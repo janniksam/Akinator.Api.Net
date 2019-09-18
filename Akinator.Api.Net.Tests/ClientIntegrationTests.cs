@@ -280,8 +280,79 @@ namespace Akinator.Api.Net.Tests
                 }
             }
         }
-        
+
         [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task StartNewGameThrowsExceptionOnCancelled()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            {
+                var src = new CancellationTokenSource();
+                var cancellationToken = src.Token;
+                src.Cancel();
+
+                await client.StartNewGame(cancellationToken);
+            }
+
+            Assert.Fail("No exception was thrown");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task AnswerThrowsExceptionOnCancelled()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            {
+                var src = new CancellationTokenSource();
+                var cancellationToken = src.Token;
+                src.Cancel();
+
+                await client.Answer(AnswerOptions.Yes, cancellationToken);
+            }
+
+            Assert.Fail("No exception was thrown");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task GetGuessThrowsExceptionOnCancelled()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            {
+                var src = new CancellationTokenSource();
+                var cancellationToken = src.Token;
+                src.Cancel();
+
+                await client.GetGuess(cancellationToken);
+            }
+
+            Assert.Fail("No exception was thrown");
+        }
+
+        [TestMethod]
+        public async Task ReuseSessionWorks()
+        {
+            AkinatorUserSession userSessionFromFirstClient;
+
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            {
+                var question = await client.StartNewGame();
+                Assert.AreEqual(0, question.Step);
+
+                question = await client.Answer(AnswerOptions.Yes);
+                Assert.AreEqual(1, question.Step);
+
+                userSessionFromFirstClient = client.GetUserSession();
+            }
+
+            using (IAkinatorClient newClient = new AkinatorClient(Language.English, ServerType.Person, userSessionFromFirstClient))
+            {
+                var question = await newClient.Answer(AnswerOptions.Yes);
+                Assert.AreEqual(2, question.Step);
+            }
+        }
+      
+      [TestMethod]
         public async Task SimpleWorkflowTest_France_Animal()
         {
             using (IAkinatorClient client = new AkinatorClient(Language.France, ServerType.Animal))
@@ -359,78 +430,6 @@ namespace Akinator.Api.Net.Tests
                         break;
                     }
                 }
-            }
-        }
-
-
-        [TestMethod]
-        [ExpectedException(typeof(OperationCanceledException))]
-        public async Task StartNewGameThrowsExceptionOnCancelled()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
-            {
-                var src = new CancellationTokenSource();
-                var cancellationToken = src.Token;
-                src.Cancel();
-
-                await client.StartNewGame(cancellationToken);
-            }
-
-            Assert.Fail("No exception was thrown");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(OperationCanceledException))]
-        public async Task AnswerThrowsExceptionOnCancelled()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
-            {
-                var src = new CancellationTokenSource();
-                var cancellationToken = src.Token;
-                src.Cancel();
-
-                await client.Answer(AnswerOptions.Yes, cancellationToken);
-            }
-
-            Assert.Fail("No exception was thrown");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(OperationCanceledException))]
-        public async Task GetGuessThrowsExceptionOnCancelled()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
-            {
-                var src = new CancellationTokenSource();
-                var cancellationToken = src.Token;
-                src.Cancel();
-
-                await client.GetGuess(cancellationToken);
-            }
-
-            Assert.Fail("No exception was thrown");
-        }
-
-        [TestMethod]
-        public async Task ReuseSessionWorks()
-        {
-            AkinatorUserSession userSessionFromFirstClient;
-
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
-            {
-                var question = await client.StartNewGame();
-                Assert.AreEqual(0, question.Step);
-
-                question = await client.Answer(AnswerOptions.Yes);
-                Assert.AreEqual(1, question.Step);
-
-                userSessionFromFirstClient = client.GetUserSession();
-            }
-
-            using (IAkinatorClient newClient = new AkinatorClient(Language.English, ServerType.Person, userSessionFromFirstClient))
-            {
-                var question = await newClient.Answer(AnswerOptions.Yes);
-                Assert.AreEqual(2, question.Step);
             }
         }
     }
