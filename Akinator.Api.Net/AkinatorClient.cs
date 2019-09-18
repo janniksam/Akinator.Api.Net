@@ -95,26 +95,22 @@ namespace Akinator.Api.Net
         {
             cancellationToken.ThrowIfCancellationRequested();
             
-            if (m_step != 0)
-            {
-                var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
+            if (m_step == 0)
+                return;
+                
+            var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
 
-                var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-                var content = await response.Content.ReadAsStringAsync();
+            var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync();
 
-                var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(content,
-                    new JsonSerializerSettings()
-                    {
-                        MissingMemberHandling = MissingMemberHandling.Ignore
-                    });
+            var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(content,
+                new JsonSerializerSettings()
+                {
+                   MissingMemberHandling = MissingMemberHandling.Ignore
+                });
 
-                m_step = result.Parameters.Step;
-                return ToAkinatorQuestion(result.Parameters);
-            }
-            else
-            {
-                return null;
-            } 
+            m_step = result.Parameters.Step;
+            return ToAkinatorQuestion(result.Parameters);
         }
 
         public async Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken)
