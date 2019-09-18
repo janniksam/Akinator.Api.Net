@@ -47,7 +47,7 @@ namespace Akinator.Api.Net.Utils
                     }
                 },
                 {
-                    Language.France, new[]
+                    Language.French, new[]
                     {
                         new Server(ServerType.Person, "srv3.akinator.com:9217/ws"),
                         new Server(ServerType.Object, "srv3.akinator.com:9218/ws"),
