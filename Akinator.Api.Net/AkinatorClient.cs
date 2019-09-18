@@ -93,21 +93,28 @@ namespace Akinator.Api.Net
 
         public async Task<AkinatorQuestion> UndoAnswer(CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            if (m_step != 0)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-            var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
+                var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
 
-            var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-            var content = await response.Content.ReadAsStringAsync();
+                var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+                var content = await response.Content.ReadAsStringAsync();
 
-            var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(content,
-                new JsonSerializerSettings()
-                {
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                });
+                var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(content,
+                    new JsonSerializerSettings()
+                    {
+                        MissingMemberHandling = MissingMemberHandling.Ignore
+                    });
 
-            m_step = result.Parameters.Step;
-            return ToAkinatorQuestion(result.Parameters);
+                m_step = result.Parameters.Step;
+                return ToAkinatorQuestion(result.Parameters);
+            }
+            else
+            {
+                return null;
+            } 
         }
 
         public async Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken)
