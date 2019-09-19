@@ -80,6 +80,31 @@ namespace Akinator.Api.Net.Utils
             var url = $"https://{server}/cancel_answer?session={session}&signature={signature}&step={step}&answer=-1";
             return url;
         }
+        
+        public static string SearchQuestion(
+            string search,
+            string Session,
+            string Signature,
+            int step,
+            Language language,
+            ServerType serverType)
+        {
+            //if (request == null)
+            //{
+            //throw new ArgumentNullException(nameof(request));
+            //}
+
+            var str = search.UrlEncode();
+
+            var server = ServerSelector.GetServerFor(language, serverType);
+            if (string.IsNullOrEmpty(server))
+            {
+                throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
+            }
+
+            var url = $"https://{server}/soundlike_search?session={Session}&signature={Signature}&step={step}&name={str}";
+            return url;
+        }
 
         public static string GetGuessUrl(
             GuessRequest request,
