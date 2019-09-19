@@ -132,7 +132,7 @@ namespace Akinator.Api.Net
                 var data = FameXML.XmlConverter.ToClass<RESULT>(content);
                 return data.AWARDS.AWARD;
             }
-            else if (m_usedLanguage == Language.France)
+            else if (m_usedLanguage == Language.French)
             {
                 var response = await m_webClient.GetAsync("http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=1").ConfigureAwait(false);
                 var content = await response.Content.ReadAsStringAsync();
