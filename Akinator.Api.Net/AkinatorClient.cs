@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,6 +10,7 @@ using Akinator.Api.Net.Model;
 using Akinator.Api.Net.Model.External;
 using Akinator.Api.Net.Utils;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Akinator.Api.Net
 {
@@ -103,6 +104,17 @@ namespace Akinator.Api.Net
             m_step = result.Parameters.Step;
             return ToAkinatorQuestion(result.Parameters);
         }
+        
+        public async Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var hallOfFameRequestUrl = AkiUrlBuilder.MapHallOfFame(m_usedLanguage);
+            var response = await m_webClient.GetAsync(hallOfFameRequestUrl, cancellationToken).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync();
+            var data = XmlConverter.ToClass<HallOfFame>(content);
+            return ToHallOfFameEntry(data.Awards.Award);
+        }
 
         public async Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken)
         {
@@ -135,6 +147,8 @@ namespace Akinator.Api.Net
         public Task<AkinatorQuestion> UndoAnswer() => UndoAnswer(CancellationToken.None);
 
         public Task<AkinatorGuess[]> GetGuess() => GetGuess(CancellationToken.None);
+
+        public Task<AkinatorHallOfFameEntries[]> GetHallOfFame() => GetHallOfFame(CancellationToken.None);
 
         public bool GuessIsDue(AkinatorQuestion question)
         {
@@ -176,6 +190,18 @@ namespace Akinator.Api.Net
 
         private static AkinatorQuestion ToAkinatorQuestion(Question question) =>
             new AkinatorQuestion(question.Text, question.Progression, question.Step);
+
+        private AkinatorHallOfFameEntries[] ToHallOfFameEntry(List<Award> awardsAward) =>
+            awardsAward
+                .Select(p => new AkinatorHallOfFameEntries(
+                    p.AwardId,
+                    p.CharacterName,
+                    p.Description,
+                    p.Type,
+                    p.WinnerName,
+                    p.Delai,
+                    p.Pos))
+                .ToArray();
 
         private GuessRequest BuildGuessRequest() =>
             new GuessRequest(m_step, m_session, m_signature);

@@ -2,6 +2,13 @@ image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 
+pull_requests:
+  do_not_increment_build_number: true
+
+branches:
+  only:
+    - master
+
 skip_commits:
   files:
     - '*.md'
@@ -23,18 +30,3 @@ after_build:
 artifacts:
 - path: '**\*.nupkg'
 deploy: off
-
-for:
--
-  branches:
-    only:
-      - dev
-
-  dotnet_csproj:
-    patch: true
-    file: '**\*.csproj'
-    version: '{version}-alpha'
-    package_version: '{version}-alpha'
-    assembly_version: '{version}'
-    file_version: '{version}'
-    informational_version: '{version} (pre-release)'

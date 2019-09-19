@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Akinator.Api.Net.Enumerations;
+using Akinator.Api.Net.Model;
+using Akinator.Api.Net.Model.External;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Akinator.Api.Net.Enumerations;
-using Akinator.Api.Net.Model;
 
 namespace Akinator.Api.Net
 {
@@ -61,6 +63,17 @@ namespace Akinator.Api.Net
         /// <param name="cancellationToken">Cancellation Token</param>
         /// <returns>The most probable guesses Akinator can come up with</returns>
         Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Get the hall of fame
+        /// </summary>
+        Task<AkinatorHallOfFameEntries[]> GetHallOfFame();
+
+        /// <summary>
+        /// Get the hall of fame
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken);
 
         /// <summary>
         /// Indicates, if Akinator is ready to guess based on a few criterias such as

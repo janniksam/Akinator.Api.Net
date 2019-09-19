@@ -428,6 +428,22 @@ namespace Akinator.Api.Net.Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task GetHallOfFameThrowsExceptionOnCancelled()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            {
+                var src = new CancellationTokenSource();
+                var cancellationToken = src.Token;
+                src.Cancel();
+
+                await client.GetHallOfFame(cancellationToken);
+            }
+
+            Assert.Fail("No exception was thrown");
+        }
+
+        [TestMethod]
         public async Task ReuseSessionWorks()
         {
             AkinatorUserSession userSessionFromFirstClient;
@@ -468,6 +484,17 @@ namespace Akinator.Api.Net.Tests
                 var questionPrevious = await client.UndoAnswer();
                 Assert.AreEqual(1, questionPrevious.Step);
                 Assert.AreEqual(question1.Text, questionPrevious.Text);
+            }
+        }
+
+        [TestMethod]
+        public async Task HallOfFameGivesValidResponse()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.German, ServerType.Person))
+            {
+                var result = await client.GetHallOfFame();
+                Assert.IsNotNull(result);
+                Assert.AreNotEqual(0, result.Length);
             }
         }
     }

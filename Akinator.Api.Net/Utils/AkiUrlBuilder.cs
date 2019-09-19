@@ -18,6 +18,33 @@ namespace Akinator.Api.Net.Utils
                 $"https://{server}/new_session?partner=1&callback=jQuery331023608747682107778_{GetTime()}&player=website-desktop&uid_ext_session={apiKey.SessionUid}&frontaddr={apiKey.FrontAdress.UrlEncode()}&constraint=ETAT%3C%3E%27AV%27&&constraint=ETAT<>'AV'";
         }
 
+        public static string MapHallOfFame(Language usedLanguage)
+        {
+            switch (usedLanguage)
+            {
+                case Language.Arabic:
+                {
+                    return "http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=12";
+                }
+                case Language.English:
+                {
+                    return "http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=25";
+                }
+                case Language.German:
+                {
+                    return "http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=5";
+                }
+                case Language.French:
+                {
+                    return "http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=1";
+                }
+                default:
+                {
+                    throw new NotSupportedException($"The language {usedLanguage} is currently not supporting the hall of fame.");
+                }
+            }
+        }
+
         public static string Answer(
             AnswerRequest request,
             Language language, 
