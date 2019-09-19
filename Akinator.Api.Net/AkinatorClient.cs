@@ -105,11 +105,11 @@ namespace Akinator.Api.Net
             return ToAkinatorQuestion(result.Parameters);
         }
         
-        public async Task<AkinatorGuess[]> SearchPerson(string search, CancellationToken cancellationToken)
+        public async Task<AkinatorGuess[]> SearchCharacter(string search, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var url = AkiUrlBuilder.SearchQuestion(search, m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
+            var url = AkiUrlBuilder.SearchCharacter(search, m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
 
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync();
@@ -169,7 +169,7 @@ namespace Akinator.Api.Net
 
         public Task<AkinatorQuestion> UndoAnswer() => UndoAnswer(CancellationToken.None);
         
-        public Task<AkinatorGuess[]> SearchPerson(string search) => SearchPerson(search, CancellationToken.None);
+        public Task<AkinatorGuess[]> SearchCharacter(string search) => SearchCharacter(search, CancellationToken.None);
 
         public Task<AkinatorGuess[]> GetGuess() => GetGuess(CancellationToken.None);
 
