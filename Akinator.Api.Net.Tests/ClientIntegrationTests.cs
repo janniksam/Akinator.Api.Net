@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NuGet.Frameworks;
 
 namespace Akinator.Api.Net.Tests
 {
@@ -423,6 +422,22 @@ namespace Akinator.Api.Net.Tests
                 src.Cancel();
 
                 await client.GetGuess(cancellationToken);
+            }
+
+            Assert.Fail("No exception was thrown");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task GetHallOfFameThrowsExceptionOnCancelled()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            {
+                var src = new CancellationTokenSource();
+                var cancellationToken = src.Token;
+                src.Cancel();
+
+                await client.GetHallOfFame(cancellationToken);
             }
 
             Assert.Fail("No exception was thrown");
