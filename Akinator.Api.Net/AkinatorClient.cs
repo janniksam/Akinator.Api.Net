@@ -10,11 +10,7 @@ using Akinator.Api.Net.Model;
 using Akinator.Api.Net.Model.External;
 using Akinator.Api.Net.Utils;
 using Newtonsoft.Json;
-using System.Xml.Serialization;
 using System.Collections.Generic;
-using System.Xml;
-using System.IO;
-using static Akinator.Api.Net.FameXML;
 
 namespace Akinator.Api.Net
 {
@@ -109,40 +105,15 @@ namespace Akinator.Api.Net
             return ToAkinatorQuestion(result.Parameters);
         }
         
-        public async Task<List<AWARD>> GetHallOfFame()
+        public async Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken)
         {
-            if (m_usedLanguage == Language.Arabic)
-            {
-                var response = await m_webClient.GetAsync("http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=12").ConfigureAwait(false);
-                var content = await response.Content.ReadAsStringAsync();
-                var data = FameXML.XmlConverter.ToClass<RESULT>(content);
-                return data.AWARDS.AWARD;
-            }
-            else if (m_usedLanguage == Language.English)
-            {
-                var response = await m_webClient.GetAsync("http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=25").ConfigureAwait(false);
-                var content = await response.Content.ReadAsStringAsync();
-                var data = FameXML.XmlConverter.ToClass<RESULT>(content);
-                return data.AWARDS.AWARD;
-            }
-            else if (m_usedLanguage == Language.German)
-            {
-                var response = await m_webClient.GetAsync("http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=5").ConfigureAwait(false);
-                var content = await response.Content.ReadAsStringAsync();
-                var data = FameXML.XmlConverter.ToClass<RESULT>(content);
-                return data.AWARDS.AWARD;
-            }
-            else if (m_usedLanguage == Language.French)
-            {
-                var response = await m_webClient.GetAsync("http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=1").ConfigureAwait(false);
-                var content = await response.Content.ReadAsStringAsync();
-                var data = FameXML.XmlConverter.ToClass<RESULT>(content);
-                return data.AWARDS.AWARD;
-            }
-            else
-            {
-                return null;
-            }
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var hallOfFameRequestUrl = AkiUrlBuilder.MapHallOfFame(m_usedLanguage);
+            var response = await m_webClient.GetAsync(hallOfFameRequestUrl, cancellationToken).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync();
+            var data = XmlConverter.ToClass<HallOfFame>(content);
+            return ToHallOfFameEntry(data.Awards.Award);
         }
 
         public async Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken)
@@ -176,6 +147,8 @@ namespace Akinator.Api.Net
         public Task<AkinatorQuestion> UndoAnswer() => UndoAnswer(CancellationToken.None);
 
         public Task<AkinatorGuess[]> GetGuess() => GetGuess(CancellationToken.None);
+
+        public Task<AkinatorHallOfFameEntries[]> GetHallOfFame() => GetHallOfFame(CancellationToken.None);
 
         public bool GuessIsDue(AkinatorQuestion question)
         {
@@ -217,6 +190,18 @@ namespace Akinator.Api.Net
 
         private static AkinatorQuestion ToAkinatorQuestion(Question question) =>
             new AkinatorQuestion(question.Text, question.Progression, question.Step);
+
+        private AkinatorHallOfFameEntries[] ToHallOfFameEntry(List<Award> awardsAward) =>
+            awardsAward
+                .Select(p => new AkinatorHallOfFameEntries(
+                    p.AwardId,
+                    p.CharacterName,
+                    p.Description,
+                    p.Type,
+                    p.WinnerName,
+                    p.Delai,
+                    p.Pos))
+                .ToArray();
 
         private GuessRequest BuildGuessRequest() =>
             new GuessRequest(m_step, m_session, m_signature);

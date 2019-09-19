@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NuGet.Frameworks;
 
 namespace Akinator.Api.Net.Tests
 {
@@ -468,6 +469,17 @@ namespace Akinator.Api.Net.Tests
                 var questionPrevious = await client.UndoAnswer();
                 Assert.AreEqual(1, questionPrevious.Step);
                 Assert.AreEqual(question1.Text, questionPrevious.Text);
+            }
+        }
+
+        [TestMethod]
+        public async Task HallOfFameGivesValidResponse()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.German, ServerType.Person))
+            {
+                var result = await client.GetHallOfFame();
+                Assert.IsNotNull(result);
+                Assert.AreNotEqual(0, result.Length);
             }
         }
     }
