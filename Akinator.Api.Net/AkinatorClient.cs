@@ -105,6 +105,29 @@ namespace Akinator.Api.Net
             return ToAkinatorQuestion(result.Parameters);
         }
         
+        public async Task<AkinatorGuess[]> SearchPerson(string search, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var url = AkiUrlBuilder.SearchQuestion(search, m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
+
+            var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<BaseResponse<Characters>>(content,
+                new JsonSerializerSettings()
+                {
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                });
+                
+            return result.Parameters._Characters.Select(p =>
+                new AkinatorGuess(p.Name, p.Description)
+                {
+                    PhotoPath = p.PhotoPath,
+                    ID = p.IdBase
+                }).ToArray();
+        }
+        
         public async Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -145,6 +168,8 @@ namespace Akinator.Api.Net
         public Task<AkinatorQuestion> Answer(AnswerOptions answer) => Answer(answer, CancellationToken.None);
 
         public Task<AkinatorQuestion> UndoAnswer() => UndoAnswer(CancellationToken.None);
+        
+        public Task<AkinatorGuess[]> SearchPerson(string search) => SearchPerson(search, CancellationToken.None);
 
         public Task<AkinatorGuess[]> GetGuess() => GetGuess(CancellationToken.None);
 
