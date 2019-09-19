@@ -81,7 +81,7 @@ namespace Akinator.Api.Net.Utils
             return url;
         }
         
-        public static string SearchGuess(
+        public static string SearchCharacter(
             string search,
             string Session,
             string Signature,
