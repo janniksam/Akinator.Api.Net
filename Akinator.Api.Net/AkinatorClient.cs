@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,6 +10,11 @@ using Akinator.Api.Net.Model;
 using Akinator.Api.Net.Model.External;
 using Akinator.Api.Net.Utils;
 using Newtonsoft.Json;
+using System.Xml.Serialization;
+using System.Collections.Generic;
+using System.Xml;
+using System.IO;
+using static Akinator.Api.Net.FameXML;
 
 namespace Akinator.Api.Net
 {
@@ -102,6 +107,42 @@ namespace Akinator.Api.Net
 
             m_step = result.Parameters.Step;
             return ToAkinatorQuestion(result.Parameters);
+        }
+        
+        public async Task<List<AWARD>> GetHallOfFame()
+        {
+            if (m_usedLanguage == Language.Arabic)
+            {
+                var response = await m_webClient.GetAsync("http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=12").ConfigureAwait(false);
+                var content = await response.Content.ReadAsStringAsync();
+                var data = FameXML.XmlConverter.ToClass<RESULT>(content);
+                return data.AWARDS.AWARD;
+            }
+            else if (m_usedLanguage == Language.English)
+            {
+                var response = await m_webClient.GetAsync("http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=25").ConfigureAwait(false);
+                var content = await response.Content.ReadAsStringAsync();
+                var data = FameXML.XmlConverter.ToClass<RESULT>(content);
+                return data.AWARDS.AWARD;
+            }
+            else if (m_usedLanguage == Language.German)
+            {
+                var response = await m_webClient.GetAsync("http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=5").ConfigureAwait(false);
+                var content = await response.Content.ReadAsStringAsync();
+                var data = FameXML.XmlConverter.ToClass<RESULT>(content);
+                return data.AWARDS.AWARD;
+            }
+            else if (m_usedLanguage == Language.France)
+            {
+                var response = await m_webClient.GetAsync("http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=1").ConfigureAwait(false);
+                var content = await response.Content.ReadAsStringAsync();
+                var data = FameXML.XmlConverter.ToClass<RESULT>(content);
+                return data.AWARDS.AWARD;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken)
