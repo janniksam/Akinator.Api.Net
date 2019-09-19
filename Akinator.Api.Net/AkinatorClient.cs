@@ -159,6 +159,7 @@ namespace Akinator.Api.Net
                 new AkinatorGuess(p.Name, p.Description)
                 {
                     PhotoPath = p.PhotoPath,
+                    ID = p.Id,
                     Probabilty = p.Probabilty
                 }).ToArray();
         }
