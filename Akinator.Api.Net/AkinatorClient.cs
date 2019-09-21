@@ -25,6 +25,7 @@ namespace Akinator.Api.Net
         private string m_signature;
         private int m_step;
         private int m_lastGuessStep;
+        private AkinatorQuestion m_currentQuestion;
 
         public AkinatorClient(Language language, ServerType serverType, AkinatorUserSession existingSession = null)
         {
@@ -59,6 +60,7 @@ namespace Akinator.Api.Net
             m_session = result.Parameters.Identification.Session;
             m_signature = result.Parameters.Identification.Signature;
             m_step = result.Parameters.StepInformation.Step;
+            m_currentQuestion = ToAkinatorQuestion(result.Parameters.StepInformation);
             return ToAkinatorQuestion(result.Parameters.StepInformation);
         }
 
@@ -78,6 +80,7 @@ namespace Akinator.Api.Net
                 });
 
             m_step = result.Parameters.Step;
+            m_currentQuestion = ToAkinatorQuestion(result.Parameters);
             return ToAkinatorQuestion(result.Parameters);
         }
 
@@ -102,6 +105,7 @@ namespace Akinator.Api.Net
                 });
 
             m_step = result.Parameters.Step;
+            m_currentQuestion = ToAkinatorQuestion(result.Parameters);
             return ToAkinatorQuestion(result.Parameters);
         }
         
@@ -126,6 +130,11 @@ namespace Akinator.Api.Net
                     PhotoPath = p.PhotoPath,
                     ID = p.IdBase
                 }).ToArray();
+        }
+        
+        public AkinatorQuestion GetCurrentQuestion()
+        {
+            return m_currentQuestion;
         }
         
         public async Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken)
