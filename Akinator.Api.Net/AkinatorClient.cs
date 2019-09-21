@@ -25,7 +25,7 @@ namespace Akinator.Api.Net
         private string m_signature;
         private int m_step;
         private int m_lastGuessStep;
-        private List<AkinatorGuess> m_excludedList;
+        private AkinatorGuess[] m_excludedList;
         private AkinatorQuestion m_currentQuestion;
 
         public AkinatorClient(Language language, ServerType serverType, AkinatorUserSession existingSession = null)
