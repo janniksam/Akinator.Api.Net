@@ -25,6 +25,7 @@ namespace Akinator.Api.Net
         private string m_signature;
         private int m_step;
         private int m_lastGuessStep;
+        private List<AkinatorGuess> m_excludedList;
         private AkinatorQuestion m_currentQuestion;
 
         public AkinatorClient(Language language, ServerType serverType, AkinatorUserSession existingSession = null)
@@ -137,6 +138,11 @@ namespace Akinator.Api.Net
             return m_currentQuestion;
         }
         
+        public void ExcludeGuess(AkinatorGuess guess)
+        {
+            m_excludedList.Add(guess);
+        }
+        
         public async Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -164,13 +170,19 @@ namespace Akinator.Api.Net
 
             m_lastGuessStep = m_step;
 
-            return result.Parameters.Characters.Select(p =>
+            var original = result.Parameters.Characters.Select(p =>
                 new AkinatorGuess(p.Name, p.Description)
                 {
                     PhotoPath = p.PhotoPath,
                     ID = p.Id,
                     Probabilty = p.Probabilty
-                }).ToArray();
+                }).ToList();
+            foreach(var item in m_excludedList)
+            {
+               original.Remove(item);
+            }    
+            var excluded = original.ToArray();
+            return excluded;
         }
 
         public Task<AkinatorQuestion> StartNewGame() => StartNewGame(CancellationToken.None);
