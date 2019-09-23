@@ -32,6 +32,6 @@ namespace Akinator.Api.Net.Model.External
             public Uri PhotoPath { get; set; }
         }
 
-        public IReadOnlyCollection<Element> _Characters => Soundlikes.Select(a => a.Element).ToList();
+        public IReadOnlyCollection<Element> AllCharacters => Soundlikes.Select(a => a.Element).ToList();
     }
 }

@@ -88,5 +88,10 @@ namespace Akinator.Api.Net
         /// the session in future time.
         /// </summary>
         AkinatorUserSession GetUserSession();
+
+        /// <summary>
+        /// Gets the current question of your session
+        /// </summary>
+        AkinatorQuestion CurrentQuestion { get; }
     }
 }

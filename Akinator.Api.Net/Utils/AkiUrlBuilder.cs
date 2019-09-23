@@ -84,7 +84,7 @@ namespace Akinator.Api.Net.Utils
         public static string SearchCharacter(
             string search,
             string Session,
-            string Signature,
+            string signature,
             int step,
             Language language,
             ServerType serverType)
@@ -98,7 +98,7 @@ namespace Akinator.Api.Net.Utils
                 throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
             }
 
-            var url = $"https://{server}/soundlike_search?session={Session}&signature={Signature}&step={step}&name={str}";
+            var url = $"https://{server}/soundlike_search?session={Session}&signature={signature}&step={step}&name={str}";
             return url;
         }
 
@@ -123,10 +123,9 @@ namespace Akinator.Api.Net.Utils
 
         private static long GetTime()
         {
-            long retval = 0;
             var st = new DateTime(1970, 1, 1);
             var t = (DateTime.Now.ToUniversalTime() - st);
-            retval = (long)(t.TotalMilliseconds + 0.5);
+            var retval = (long)(t.TotalMilliseconds + 0.5);
             return retval;
         }
     }

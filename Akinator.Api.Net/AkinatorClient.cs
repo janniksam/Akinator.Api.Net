@@ -60,7 +60,7 @@ namespace Akinator.Api.Net
             m_session = result.Parameters.Identification.Session;
             m_signature = result.Parameters.Identification.Signature;
             m_step = result.Parameters.StepInformation.Step;
-            m_currentQuestion = ToAkinatorQuestion(result.Parameters.StepInformation);
+            CurrentQuestion = ToAkinatorQuestion(result.Parameters.StepInformation);
             return ToAkinatorQuestion(result.Parameters.StepInformation);
         }
 
@@ -80,7 +80,7 @@ namespace Akinator.Api.Net
                 });
 
             m_step = result.Parameters.Step;
-            m_currentQuestion = ToAkinatorQuestion(result.Parameters);
+            CurrentQuestion = ToAkinatorQuestion(result.Parameters);
             return ToAkinatorQuestion(result.Parameters);
         }
 
@@ -105,7 +105,7 @@ namespace Akinator.Api.Net
                 });
 
             m_step = result.Parameters.Step;
-            m_currentQuestion = ToAkinatorQuestion(result.Parameters);
+            CurrentQuestion = ToAkinatorQuestion(result.Parameters);
             return ToAkinatorQuestion(result.Parameters);
         }
         
@@ -116,7 +116,7 @@ namespace Akinator.Api.Net
             var url = AkiUrlBuilder.SearchCharacter(search, m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
 
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var result = JsonConvert.DeserializeObject<BaseResponse<Characters>>(content,
                 new JsonSerializerSettings()
@@ -124,17 +124,18 @@ namespace Akinator.Api.Net
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 });
                 
-            return result.Parameters._Characters.Select(p =>
+            return result.Parameters.AllCharacters.Select(p =>
                 new AkinatorGuess(p.Name, p.Description)
                 {
+                    ID = p.IdBase,
                     PhotoPath = p.PhotoPath,
-                    ID = p.IdBase
                 }).ToArray();
         }
-        
-        public AkinatorQuestion GetCurrentQuestion()
+
+        public AkinatorQuestion CurrentQuestion
         {
-            return m_currentQuestion;
+            get => m_currentQuestion;
+            private set => m_currentQuestion = value;
         }
         
         public async Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken)
@@ -167,8 +168,8 @@ namespace Akinator.Api.Net
             return result.Parameters.Characters.Select(p =>
                 new AkinatorGuess(p.Name, p.Description)
                 {
-                    PhotoPath = p.PhotoPath,
                     ID = p.Id,
+                    PhotoPath = p.PhotoPath,
                     Probabilty = p.Probabilty
                 }).ToArray();
         }
