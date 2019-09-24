@@ -10,12 +10,14 @@ namespace Akinator.Api.Net.Model
             Description = description;
         }
 
+        public ulong ID { get; set; }
+
         public string Name { get; }
 
         public string Description { get; }
 
         public float Probabilty { get; set; }
-
+        
         public Uri PhotoPath { get; set; }
     }
 }

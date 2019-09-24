@@ -443,6 +443,23 @@ namespace Akinator.Api.Net.Tests
             Assert.Fail("No exception was thrown");
         }
 
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task SearchCharacterThrowsExceptionOnCancelled()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            {
+                var src = new CancellationTokenSource();
+                var cancellationToken = src.Token;
+                src.Cancel();
+
+                await client.SearchCharacter("Brat Pitt", cancellationToken);
+            }
+
+            Assert.Fail("No exception was thrown");
+        }
+
         [TestMethod]
         public async Task ReuseSessionWorks()
         {
@@ -484,6 +501,36 @@ namespace Akinator.Api.Net.Tests
                 var questionPrevious = await client.UndoAnswer();
                 Assert.AreEqual(1, questionPrevious.Step);
                 Assert.AreEqual(question1.Text, questionPrevious.Text);
+            }
+        }
+
+        [TestMethod]
+        public async Task CurrentQuestionReturnsCurrentQuestion()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            {
+                var questionStart = await client.StartNewGame();
+                Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
+
+                questionStart = await client.Answer(AnswerOptions.Yes);
+                Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
+
+                questionStart = await client.Answer(AnswerOptions.Yes);
+                Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
+
+                questionStart = await client.UndoAnswer();
+                Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
+            }
+        }
+
+        [TestMethod]
+        public async Task SearchCharacter_ReturnsValidCharactersForASearchTerm()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            {
+                await client.StartNewGame();
+                var chars = await client.SearchCharacter("Brat Pitt");
+                Assert.IsTrue(chars.Any(p => p.Name.Contains("brat pitt", StringComparison.InvariantCultureIgnoreCase)));
             }
         }
 
