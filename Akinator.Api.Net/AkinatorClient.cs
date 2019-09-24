@@ -25,7 +25,6 @@ namespace Akinator.Api.Net
         private string m_signature;
         private int m_step;
         private int m_lastGuessStep;
-        private AkinatorQuestion m_currentQuestion;
 
         public AkinatorClient(Language language, ServerType serverType, AkinatorUserSession existingSession = null)
         {
@@ -132,12 +131,8 @@ namespace Akinator.Api.Net
                 }).ToArray();
         }
 
-        public AkinatorQuestion CurrentQuestion
-        {
-            get => m_currentQuestion;
-            private set => m_currentQuestion = value;
-        }
-        
+        public AkinatorQuestion CurrentQuestion { get; private set; }
+
         public async Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
