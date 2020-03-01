@@ -21,7 +21,7 @@ namespace Akinator.Api.Net.Utils
                 {
                     Language.English, new[]
                     {
-                        new Server(ServerType.Person, "srv13.akinator.com:9196/ws"),
+                        new Server(ServerType.Person, "srv2.akinator.com:9306/ws"),
                         new Server(ServerType.Object, "srv14.akinator.com:9293/ws"),
                         new Server(ServerType.Animal, "srv13.akinator.com:9287/ws")
                     }
