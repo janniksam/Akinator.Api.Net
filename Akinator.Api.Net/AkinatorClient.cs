@@ -21,16 +21,18 @@ namespace Akinator.Api.Net
         private readonly HttpClient m_webClient;
         private readonly Language m_usedLanguage;
         private readonly ServerType m_usedServerType;
+        private readonly bool Child_Mode;
         private string m_session;
         private string m_signature;
         private int m_step;
         private int m_lastGuessStep;
 
-        public AkinatorClient(Language language, ServerType serverType, AkinatorUserSession existingSession = null)
+        public AkinatorClient(Language language, ServerType serverType, AkinatorUserSession existingSession = null, bool child_mode = false)
         {
             m_webClient = new HttpClient();
             m_usedLanguage = language;
             m_usedServerType = serverType;
+            Child_Mode = child_mode;
             Attach(existingSession);
         }
 
@@ -39,7 +41,7 @@ namespace Akinator.Api.Net
             cancellationToken.ThrowIfCancellationRequested();
 
             var apiKey = await GetSession().ConfigureAwait(false);
-            var url = AkiUrlBuilder.NewGame(apiKey, m_usedLanguage, m_usedServerType);
+            var url = AkiUrlBuilder.NewGame(apiKey, m_usedLanguage, m_usedServerType, Child_Mode);
             
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync();

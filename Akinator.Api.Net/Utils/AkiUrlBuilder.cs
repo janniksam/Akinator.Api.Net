@@ -6,16 +6,25 @@ namespace Akinator.Api.Net.Utils
 {
     internal static class AkiUrlBuilder
     {
-        public static string NewGame(ApiKey apiKey, Language language, ServerType serverType)
+        public static string NewGame(ApiKey apiKey, Language language, ServerType serverType, bool child_mode)
         {
+            var child_switch = String.Empty;
+            var question_filter = String.Empty;
+
             var server = ServerSelector.GetServerFor(language, serverType);
             if (string.IsNullOrEmpty(server))
             {
                 throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
             }
 
+            if (child_mode == true)
+            {
+                child_switch = "true";
+                question_filter = "cat%3D1";
+            }
+
             return
-                $"https://{server}/new_session?partner=1&callback=jQuery331023608747682107778_{GetTime()}&player=website-desktop&uid_ext_session={apiKey.SessionUid}&frontaddr={apiKey.FrontAdress.UrlEncode()}&constraint=ETAT%3C%3E%27AV%27&&constraint=ETAT<>'AV'";
+                $"https://{server}/new_session?partner=1&callback=jQuery331023608747682107778_{GetTime()}&player=website-desktop&uid_ext_session={apiKey.SessionUid}&frontaddr={apiKey.FrontAdress.UrlEncode()}&childMod={child_switch}&constraint=ETAT%3C%3E%27AV%27&&constraint=ETAT<>'AV'&question_filter={question_filter}";
         }
 
         public static string MapHallOfFame(Language usedLanguage)
