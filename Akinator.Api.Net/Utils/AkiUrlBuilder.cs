@@ -6,7 +6,7 @@ namespace Akinator.Api.Net.Utils
 {
     internal static class AkiUrlBuilder
     {
-        public static string NewGame(ApiKey apiKey, Language language, ServerType serverType, bool child_mode)
+        public static string NewGame(ApiKey apiKey, Language language, ServerType serverType, bool childMode)
         {
             var child_switch = String.Empty;
             var question_filter = String.Empty;
@@ -17,7 +17,7 @@ namespace Akinator.Api.Net.Utils
                 throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
             }
 
-            if (child_mode == true)
+            if (childMode == true)
             {
                 child_switch = "true";
                 question_filter = "cat%3D1";
