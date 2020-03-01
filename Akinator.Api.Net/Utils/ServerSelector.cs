@@ -29,7 +29,7 @@ namespace Akinator.Api.Net.Utils
                 {
                     Language.Arabic, new[]
                     {
-                        new Server(ServerType.Person, "srv2.akinator.com:9155/ws")
+                        new Server(ServerType.Person, "srv2.akinator.com:9304/ws")
                     }
                 },
                 {
