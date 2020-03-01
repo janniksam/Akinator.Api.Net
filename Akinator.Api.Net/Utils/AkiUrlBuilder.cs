@@ -17,7 +17,7 @@ namespace Akinator.Api.Net.Utils
                 throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
             }
 
-            if (childMode == true)
+            if (childMode)
             {
                 child_switch = "true";
                 question_filter = "cat%3D1";
