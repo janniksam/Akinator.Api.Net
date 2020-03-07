@@ -504,6 +504,19 @@ namespace Akinator.Api.Net.Tests
             }
         }
 
+
+        [TestMethod]
+        public async Task ChildModeDoesNotThrowAnyExceptions()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person, childMode: true))
+            {
+                var questionStart = await client.StartNewGame(); 
+                var nextQuestion = await client.Answer(AnswerOptions.Yes);
+                Assert.AreEqual(0, questionStart.Step);
+                Assert.AreEqual(1, nextQuestion.Step);
+            }
+        }
+
         [TestMethod]
         public async Task CurrentQuestionReturnsCurrentQuestion()
         {
