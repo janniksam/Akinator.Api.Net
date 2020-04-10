@@ -118,7 +118,34 @@ namespace Akinator.Api.Net.Tests
                 }
             }
         }
-        
+
+        [TestMethod]
+        public async Task SimpleWorkflowTest_English_Movie()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Movie))
+            {
+                var question = await client.StartNewGame();
+                while (true)
+                {
+                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
+                    if (!client.GuessIsDue(nextQuestion))
+                    {
+                        continue;
+                    }
+
+                    var guess = await client.GetGuess();
+                    if (!guess.Any())
+                    {
+                        Assert.Fail("No guess was found");
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
         [TestMethod]
         public async Task SimpleWorkflowTest_French_Animal()
         {
@@ -177,6 +204,33 @@ namespace Akinator.Api.Net.Tests
         public async Task SimpleWorkflowTest_French_Person()
         {
             using (IAkinatorClient client = new AkinatorClient(Language.French, ServerType.Person))
+            {
+                var question = await client.StartNewGame();
+                while (true)
+                {
+                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
+                    if (!client.GuessIsDue(nextQuestion))
+                    {
+                        continue;
+                    }
+
+                    var guess = await client.GetGuess();
+                    if (!guess.Any())
+                    {
+                        Assert.Fail("No guess was found");
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task SimpleWorkflowTest_French_Movie()
+        {
+            using (IAkinatorClient client = new AkinatorClient(Language.French, ServerType.Movie))
             {
                 var question = await client.StartNewGame();
                 while (true)
@@ -501,19 +555,6 @@ namespace Akinator.Api.Net.Tests
                 var questionPrevious = await client.UndoAnswer();
                 Assert.AreEqual(1, questionPrevious.Step);
                 Assert.AreEqual(question1.Text, questionPrevious.Text);
-            }
-        }
-
-
-        [TestMethod]
-        public async Task ChildModeDoesNotThrowAnyExceptions()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person, childMode: true))
-            {
-                var questionStart = await client.StartNewGame(); 
-                var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                Assert.AreEqual(0, questionStart.Step);
-                Assert.AreEqual(1, nextQuestion.Step);
             }
         }
 
