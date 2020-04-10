@@ -65,14 +65,14 @@ namespace Akinator.Api.Net
         Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken);
 
         /// <summary>
-        /// Searches Akinator for a specific character (person, object, animal)
+        /// Searches Akinator for a specific character (person, object, animal, movie)
         /// </summary>
         /// <param name="search">Searchterm to be searched for</param>
         /// <returns>The list of characters, Akinator comes up with</returns>
         Task<AkinatorGuess[]> SearchCharacter(string search);
 
         /// <summary>
-        /// Searches Akinator for a specific character (person, object, animal)
+        /// Searches Akinator for a specific character (person, object, animal, movie)
         /// </summary>
         /// <param name="search">Searchterm to be searched for</param>
         /// <param name="cancellationToken">Cancellation Token</param>

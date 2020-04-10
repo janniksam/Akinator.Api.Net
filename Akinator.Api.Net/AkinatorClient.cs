@@ -17,22 +17,31 @@ namespace Akinator.Api.Net
     public class AkinatorClient : IAkinatorClient
     {
         private readonly Regex m_regexSession = new Regex("var uid_ext_session = '(.*)'\\;\\n.*var frontaddr = '(.*)'\\;");
-        private readonly Regex m_regexStartGameResult = new Regex(@"^jQuery331023608747682107778_\d+\((.+)\)$");
+        private readonly Regex m_regexStartGameResult = new Regex(@"^jQuery3410014644797238627216_\d+\((.+)\)$");
         private readonly HttpClient m_webClient;
         private readonly Language m_usedLanguage;
         private readonly ServerType m_usedServerType;
-        private readonly bool m_childMode;
+        private readonly bool Child_Mode;
         private string m_session;
         private string m_signature;
         private int m_step;
         private int m_lastGuessStep;
 
-        public AkinatorClient(Language language, ServerType serverType, AkinatorUserSession existingSession = null, bool childMode = false)
+        public AkinatorClient(Language language, ServerType serverType, AkinatorUserSession existingSession = null, bool child_mode = false)
         {
-            m_webClient = new HttpClient();
+            m_webClient = new HttpClient(new HttpClientHandler { UseCookies = false });
+            m_webClient.DefaultRequestHeaders.Add("Accept", "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01");
+            m_webClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9,ar;q=0.8");
+            m_webClient.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
+            m_webClient.DefaultRequestHeaders.Add("Sec-Fetch-Dest", "empty");
+            m_webClient.DefaultRequestHeaders.Add("Sec-Fetch-Mode", "cors");
+            m_webClient.DefaultRequestHeaders.Add("Sec-Fetch-Site", "same-origin");
+            m_webClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
+            m_webClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.92 Safari/537.36");
+            m_webClient.DefaultRequestHeaders.Add("Referer", "https://en.akinator.com/game");
             m_usedLanguage = language;
             m_usedServerType = serverType;
-            m_childMode = childMode;
+            Child_Mode = child_mode;
             Attach(existingSession);
         }
 
@@ -41,7 +50,7 @@ namespace Akinator.Api.Net
             cancellationToken.ThrowIfCancellationRequested();
 
             var apiKey = await GetSession().ConfigureAwait(false);
-            var url = AkiUrlBuilder.NewGame(apiKey, m_usedLanguage, m_usedServerType, m_childMode);
+            var url = AkiUrlBuilder.NewGame(apiKey, m_usedLanguage, m_usedServerType, Child_Mode);
             
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync();
