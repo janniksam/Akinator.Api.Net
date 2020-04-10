@@ -14,50 +14,52 @@ namespace Akinator.Api.Net.Utils
                 {
                     Language.German, new[]
                     {
-                        new Server(ServerType.Person, "srv14.akinator.com:9283/ws"),
-                        new Server(ServerType.Animal, "srv14.akinator.com:9284/ws")
+                        new Server(ServerType.Person, "srv14.akinator.com:9369/ws"),
+                        new Server(ServerType.Animal, "srv14.akinator.com:9370/ws")
                     }
                 },
                 {
                     Language.English, new[]
                     {
-                        new Server(ServerType.Person, "srv2.akinator.com:9306/ws"),
-                        new Server(ServerType.Object, "srv14.akinator.com:9293/ws"),
-                        new Server(ServerType.Animal, "srv13.akinator.com:9287/ws")
+                        new Server(ServerType.Person, "srv2.akinator.com:9317/ws"),
+                        new Server(ServerType.Object, "srv2.akinator.com:9319/ws"),
+                        new Server(ServerType.Animal, "srv2.akinator.com:9318/ws"),
+                        new Server(ServerType.Movie, "srv13.akinator.com:9364/ws")
                     }
                 },
                 {
                     Language.Arabic, new[]
                     {
-                        new Server(ServerType.Person, "srv2.akinator.com:9304/ws")
+                        new Server(ServerType.Person, "srv2.akinator.com:9315/ws")
                     }
                 },
                 {
                     Language.Italian, new[]
                     {
-                        new Server(ServerType.Person, "srv9.akinator.com:9214/ws"),
-                        new Server(ServerType.Animal, "srv9.akinator.com:9261/ws")
+                        new Server(ServerType.Person, "srv9.akinator.com:9380/ws"),
+                        new Server(ServerType.Animal, "srv9.akinator.com:9383/ws")
                     }
                 },
                 {
                     Language.Spanish, new[]
                     {
-                        new Server(ServerType.Person, "srv13.akinator.com:9194/ws"),
-                        new Server(ServerType.Animal, "srv13.akinator.com:9257/ws")
+                        new Server(ServerType.Person, "srv6.akinator.com:9354/ws"),
+                        new Server(ServerType.Animal, "srv13.akinator.com:9362/ws")
                     }
                 },
                 {
                     Language.French, new[]
                     {
-                        new Server(ServerType.Person, "srv3.akinator.com:9217/ws"),
-                        new Server(ServerType.Object, "srv3.akinator.com:9218/ws"),
-                        new Server(ServerType.Animal, "srv3.akinator.com:9259/ws")
+                        new Server(ServerType.Person, "srv3.akinator.com:9331/ws"),
+                        new Server(ServerType.Object, "srv3.akinator.com:9330/ws"),
+                        new Server(ServerType.Animal, "srv3.akinator.com:9329/ws"),
+                        new Server(ServerType.Movie, "srv13.akinator.com:9387/ws")
                     }
                 },
                 {
                     Language.Russian, new[]
                     {
-                        new Server(ServerType.Person, "srv12.akinator.com:9190/ws")
+                        new Server(ServerType.Person, "srv12.akinator.com:9340/ws")
                     }
                 }
             };

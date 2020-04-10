@@ -24,7 +24,7 @@ namespace Akinator.Api.Net.Utils
             }
 
             return
-                $"https://{server}/new_session?partner=1&callback=jQuery331023608747682107778_{GetTime()}&player=website-desktop&uid_ext_session={apiKey.SessionUid}&frontaddr={apiKey.FrontAdress.UrlEncode()}&childMod={child_switch}&constraint=ETAT%3C%3E%27AV%27&&constraint=ETAT<>'AV'&question_filter={question_filter}";
+                $"https://en.akinator.com/new_session?callback=jQuery3410014644797238627216_{GetTime()}&urlApiWs={Uri.EscapeDataString("https://" + server)}&player=website-desktop&&partner=1&uid_ext_session={apiKey.SessionUid}&frontaddr={apiKey.FrontAdress.UrlEncode()}&childMod={child_switch}&constraint={Uri.EscapeDataString("ETAT<>'AV'")}&soft_constraint=&question_filter={question_filter}&_={GetTime()}";
         }
 
         public static string MapHallOfFame(Language usedLanguage)
