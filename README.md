@@ -15,8 +15,8 @@ This is a WIP project and in a very early stage. Currently only some servers are
 | Language | Servers |
 | --- | --- |
 | Arabic | Person |
-| English | Animal, Object, Person |
-| French | Animal, Object, Person |
+| English | Animal, Object, Person, Movie |
+| French | Animal, Object, Person, Movie |
 | German | Person, Animal |
 | Italian | Animal, Person |
 | Russian | Person |
