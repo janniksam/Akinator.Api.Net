@@ -53,7 +53,7 @@ using (var client = new AkinatorClient(Language.German, ServerType.Person))
 }
 ```
 
-### Built on top of .NET Standard to support:
+### Built on top of .NET Standard 1.4 to support:
 
 - .NET Core 1.0
 
