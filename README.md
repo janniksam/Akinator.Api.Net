@@ -52,3 +52,21 @@ using (var client = new AkinatorClient(Language.German, ServerType.Person))
    }
 }
 ```
+
+### Built on top of .NET Standard to support:
+
+- .NET Core 1.0
+
+- Universal Windows Platform 10.0
+
+- .NET framework 4.6.1
+
+- Mono 4.6
+
+- Unity 2018.1
+
+- Xamarin.IOS 10.0
+
+- Xamarin.Mac 3.0
+
+- Xamarin.Android 7.0
