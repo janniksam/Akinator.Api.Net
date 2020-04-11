@@ -1,6 +1,6 @@
-# Akinator API for .NET Standard 2.0
+# Akinator API for .NET Standard 1.4
 
-This is an improved async version of the Akinator API, written for .NET Standard 2.0
+This is an improved async version of the Akinator API, written for .NET Standard 1.4
 
 [![Build status master](https://ci.appveyor.com/api/projects/status/al1pxhaokdi8ymqe?svg=true&passingText=master%20-%20passing&failingText=master%20-%20failing&pendingText=master%20-%20pending)](https://ci.appveyor.com/project/janniksam/Akinator-Api-Net) 
 [![NuGet version](https://badge.fury.io/nu/Akinator.Api.Net.svg)](https://badge.fury.io/nu/Akinator.Api.Net)

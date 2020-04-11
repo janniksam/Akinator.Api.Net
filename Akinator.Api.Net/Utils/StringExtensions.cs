@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Text;
-using System.Web;
+using System.Net;
 
 namespace Akinator.Api.Net.Utils
 {
@@ -13,7 +12,7 @@ namespace Akinator.Api.Net.Utils
                 throw new ArgumentNullException(nameof(input));
             }
 
-            var temp = HttpUtility.UrlEncode(input, Encoding.UTF8).ToCharArray();
+            var temp = WebUtility.UrlEncode(input).ToCharArray();
             for (var i = 0; i < temp.Length - 2; i++)
             {
                 if (temp[i] == '%')
@@ -23,6 +22,6 @@ namespace Akinator.Api.Net.Utils
                 }
             }
             return new string(temp);
-        }
+       }
     }
 }
