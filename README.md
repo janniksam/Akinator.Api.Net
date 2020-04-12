@@ -26,8 +26,7 @@ All the other servers are coming later or if someone requests it. They are not h
 
 ## Known issues
 
-- Not all servers are currently supported.
-- The GuessIsDue-method, which decides, when Akinator is ready to guess, needs to be improved significantly
+- Not all servers are currently supported (see https://github.com/janniksam/Akinator.Api.Net/issues/11).
 
 ## Basic usage
 
