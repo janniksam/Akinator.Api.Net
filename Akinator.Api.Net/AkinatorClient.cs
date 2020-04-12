@@ -191,47 +191,9 @@ namespace Akinator.Api.Net
         public Task<AkinatorGuess[]> GetGuess() => GetGuess(CancellationToken.None);
 
         public Task<AkinatorHallOfFameEntries[]> GetHallOfFame() => GetHallOfFame(CancellationToken.None);
-
-
-        private bool NoMoreQuestions()
-        {
-            //TODO
-            return false;
-        }
-
-        public bool GuessIsDue()
-        {
-            if (CurrentQuestion is null)
-            {
-                return false;
-            }
-            int step = CurrentQuestion.Step;
-            int variance = step - m_lastGuessStep;
-            double progress = CurrentQuestion.Progression;
-            if (NoMoreQuestions() || step == 80)
-            {
-                return true;
-            }
-            if (variance < 5)
-            {
-                return false;
-            }
-            if (step <= 25)
-            {
-                if (progress > 97.0)
-                {
-                    return true;
-                }
-            }
-            else if (progress >= 80.0 || variance >= 30)
-            {
-                if (variance >= 10)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        
+        public bool GuessIsDue() =>
+            GuessDueChecker.GuessIsDue(CurrentQuestion, m_lastGuessStep);
 
         private async Task<ApiKey> GetSession()
         {
