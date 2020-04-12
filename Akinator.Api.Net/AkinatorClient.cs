@@ -51,7 +51,7 @@ namespace Akinator.Api.Net
 
             var apiKey = await GetSession().ConfigureAwait(false);
             var url = AkiUrlBuilder.NewGame(apiKey, m_usedLanguage, m_usedServerType, m_childMode);
-            
+
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync();
 
@@ -102,7 +102,7 @@ namespace Akinator.Api.Net
             {
                 return null;
             }
-                
+
             var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
 
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
@@ -111,14 +111,14 @@ namespace Akinator.Api.Net
             var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(content,
                 new JsonSerializerSettings
                 {
-                   MissingMemberHandling = MissingMemberHandling.Ignore
+                    MissingMemberHandling = MissingMemberHandling.Ignore
                 });
 
             m_step = result.Parameters.Step;
             CurrentQuestion = ToAkinatorQuestion(result.Parameters);
             return ToAkinatorQuestion(result.Parameters);
         }
-        
+
         public async Task<AkinatorGuess[]> SearchCharacter(string search, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -133,7 +133,7 @@ namespace Akinator.Api.Net
                 {
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 });
-                
+
             return result.Parameters.AllCharacters.Select(p =>
                 new AkinatorGuess(p.Name, p.Description)
                 {
@@ -185,7 +185,7 @@ namespace Akinator.Api.Net
         public Task<AkinatorQuestion> Answer(AnswerOptions answer) => Answer(answer, CancellationToken.None);
 
         public Task<AkinatorQuestion> UndoAnswer() => UndoAnswer(CancellationToken.None);
-        
+
         public Task<AkinatorGuess[]> SearchCharacter(string search) => SearchCharacter(search, CancellationToken.None);
 
         public Task<AkinatorGuess[]> GetGuess() => GetGuess(CancellationToken.None);
@@ -201,33 +201,35 @@ namespace Akinator.Api.Net
 
         public bool GuessIsDue()
         {
+            if (CurrentQuestion is null)
+                return false;
             int step = CurrentQuestion.Step;
-            int i = step - m_lastGuessStep;
+            int variance = step - m_lastGuessStep;
             double progress = CurrentQuestion.Progression;
             bool result = true;
-            if (!(NoMoreQuestions() || step == 80))
+            if (NoMoreQuestions() || step == 80)
             {
-                if (i < 5)
-                {
-                    return false;
-                }
-                if (step <= 25)
-                {
-                    if (progress > 97.0)
-                    {
-                        return true;
-                    }
-                }
-                else if (progress > 80.0 || i>= 30)
-                {
-                    if (80 - step <= 5)
-                    {
-                        result = false;
-                    }
-                }
+                return result;
+            }
+            if (variance < 5)
+            {
                 return false;
             }
-            return result;
+            if (step <= 25)
+            {
+                if (progress > 97.0)
+                {
+                    return true;
+                }
+            }
+            else if (progress > 80.0 || variance >= 30)
+            {
+                if (80 - step <= 5)
+                {
+                    result = false;
+                }
+            }
+            return false;
         }
 
         private async Task<ApiKey> GetSession()
