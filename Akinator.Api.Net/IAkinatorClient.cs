@@ -94,9 +94,8 @@ namespace Akinator.Api.Net
         /// Indicates, if Akinator is ready to guess based on a few criterias such as
         /// already answered questions or the probability given by Akinator
         /// </summary>
-        /// <param name="question">The last question asked by Akinator</param>
         /// <returns>Indicates whether Akinator is ready to guess or not</returns>
-        bool GuessIsDue(AkinatorQuestion question);
+        bool GuessIsDue();
 
         /// <summary>
         /// Gives back all the necessary informations that are required to continue

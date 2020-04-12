@@ -20,7 +20,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -47,7 +47,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -74,7 +74,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -101,7 +101,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -128,7 +128,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -155,7 +155,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -182,7 +182,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -209,7 +209,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -236,7 +236,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -263,7 +263,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -290,7 +290,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -317,7 +317,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -344,7 +344,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -371,7 +371,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
@@ -398,7 +398,7 @@ namespace Akinator.Api.Net.Tests
                 while (true)
                 {
                     var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue(nextQuestion))
+                    if (!client.GuessIsDue())
                     {
                         continue;
                     }
