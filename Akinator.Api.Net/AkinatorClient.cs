@@ -202,14 +202,15 @@ namespace Akinator.Api.Net
         public bool GuessIsDue()
         {
             if (CurrentQuestion is null)
+            {
                 return false;
+            }
             int step = CurrentQuestion.Step;
             int variance = step - m_lastGuessStep;
             double progress = CurrentQuestion.Progression;
-            bool result = true;
             if (NoMoreQuestions() || step == 80)
             {
-                return result;
+                return true;
             }
             if (variance < 5)
             {
@@ -222,11 +223,11 @@ namespace Akinator.Api.Net
                     return true;
                 }
             }
-            else if (progress > 80.0 || variance >= 30)
+            else if (progress >= 80.0 || variance >= 30)
             {
-                if (80 - step <= 5)
+                if (variance >= 10)
                 {
-                    result = false;
+                    return true;
                 }
             }
             return false;
