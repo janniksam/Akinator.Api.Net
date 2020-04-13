@@ -43,7 +43,7 @@ using (var client = new AkinatorClient(Language.German, ServerType.Person))
    var question = await client.Answer(AnswerOptions.Yes);
    
    // if Akinator is due to guess...
-   if (client.GuessIsDue(question))
+   if (client.GuessIsDue())
    {
       // Get Akinators guess..
       var guess = await client.GetGuess();
