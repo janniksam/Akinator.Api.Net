@@ -25,7 +25,7 @@ namespace Akinator.Api.Net.Example
                 do
                 {
                     question = await client.Answer(answer);
-                    if (client.GuessIsDue(question))
+                    if (client.GuessIsDue())
                     {
                         var guess = await client.GetGuess();
                         if (VerifyGuess(guess))
