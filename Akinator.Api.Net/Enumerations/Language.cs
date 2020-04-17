@@ -2,12 +2,21 @@
 {
     public enum Language
     {
-        English,
-        German,
         Arabic,
-        Italian,
-        Spanish,
-        Russian,
+        Chinese,
+        English,
         French,
+        German,
+        Indonesian,
+        Israel,
+        Italian,
+        Japan,
+        Korean,
+        Netherlands,
+        Polski,
+        Portuguese,
+        Russian,
+        Spanish,
+        Turkish,
     }
 }

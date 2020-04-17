@@ -18,6 +18,7 @@
         Person = 0,
         Animal = 1,
         Object = 2,
-        Movie = 3
+        Movie = 3,
+        Places = 4,
     }
 }
