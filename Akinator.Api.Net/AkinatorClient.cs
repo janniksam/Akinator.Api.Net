@@ -36,7 +36,7 @@ namespace Akinator.Api.Net
             Attach(existingSession);
         }
 
-        public async Task<AkinatorQuestion> StartNewGame(CancellationToken cancellationToken)
+        public async Task<AkinatorQuestion> StartNewGame(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -65,7 +65,7 @@ namespace Akinator.Api.Net
             return ToAkinatorQuestion(result.Parameters.StepInformation);
         }
 
-        public async Task<AkinatorQuestion> Answer(AnswerOptions answer, CancellationToken cancellationToken)
+        public async Task<AkinatorQuestion> Answer(AnswerOptions answer, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -85,7 +85,7 @@ namespace Akinator.Api.Net
             return ToAkinatorQuestion(result.Parameters);
         }
 
-        public async Task<AkinatorQuestion> UndoAnswer(CancellationToken cancellationToken)
+        public async Task<AkinatorQuestion> UndoAnswer(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -110,7 +110,7 @@ namespace Akinator.Api.Net
             return ToAkinatorQuestion(result.Parameters);
         }
 
-        public async Task<AkinatorGuess[]> SearchCharacter(string search, CancellationToken cancellationToken)
+        public async Task<AkinatorGuess[]> SearchCharacter(string search, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -135,7 +135,7 @@ namespace Akinator.Api.Net
 
         public AkinatorQuestion CurrentQuestion { get; private set; }
 
-        public async Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken)
+        public async Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -146,7 +146,7 @@ namespace Akinator.Api.Net
             return ToHallOfFameEntry(data.Awards.Award);
         }
 
-        public async Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken)
+        public async Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -171,18 +171,6 @@ namespace Akinator.Api.Net
                 }).ToArray();
         }
 
-        public Task<AkinatorQuestion> StartNewGame() => StartNewGame(CancellationToken.None);
-
-        public Task<AkinatorQuestion> Answer(AnswerOptions answer) => Answer(answer, CancellationToken.None);
-
-        public Task<AkinatorQuestion> UndoAnswer() => UndoAnswer(CancellationToken.None);
-
-        public Task<AkinatorGuess[]> SearchCharacter(string search) => SearchCharacter(search, CancellationToken.None);
-
-        public Task<AkinatorGuess[]> GetGuess() => GetGuess(CancellationToken.None);
-
-        public Task<AkinatorHallOfFameEntries[]> GetHallOfFame() => GetHallOfFame(CancellationToken.None);
-        
         public bool GuessIsDue(Platform platform = Platform.Android) =>
             GuessDueChecker.GuessIsDue(CurrentQuestion, m_lastGuessStep, platform);
 
