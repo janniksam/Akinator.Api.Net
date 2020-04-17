@@ -18,7 +18,7 @@ namespace Akinator.Api.Net
     {
         private readonly Regex m_regexSession = new Regex("var uid_ext_session = '(.*)'\\;\\n.*var frontaddr = '(.*)'\\;");
         private readonly Regex m_regexStartGameResult = new Regex(@"^jQuery3410014644797238627216_\d+\((.+)\)$");
-        private readonly HttpClient m_webClient;
+        private readonly AkiWebClient m_webClient;
         private readonly Language m_usedLanguage;
         private readonly ServerType m_usedServerType;
         private readonly bool m_childMode;
@@ -29,16 +29,7 @@ namespace Akinator.Api.Net
 
         public AkinatorClient(Language language, ServerType serverType, AkinatorUserSession existingSession = null, bool childMode = false)
         {
-            m_webClient = new HttpClient(new HttpClientHandler { UseCookies = false });
-            m_webClient.DefaultRequestHeaders.Add("Accept", "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01");
-            m_webClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9,ar;q=0.8");
-            m_webClient.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
-            m_webClient.DefaultRequestHeaders.Add("Sec-Fetch-Dest", "empty");
-            m_webClient.DefaultRequestHeaders.Add("Sec-Fetch-Mode", "cors");
-            m_webClient.DefaultRequestHeaders.Add("Sec-Fetch-Site", "same-origin");
-            m_webClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
-            m_webClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.92 Safari/537.36");
-            m_webClient.DefaultRequestHeaders.Add("Referer", "https://en.akinator.com/game");
+            m_webClient = new AkiWebClient();
             m_usedLanguage = language;
             m_usedServerType = serverType;
             m_childMode = childMode;
@@ -49,11 +40,11 @@ namespace Akinator.Api.Net
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var apiKey = await GetSession().ConfigureAwait(false);
+            var apiKey = await GetSession(cancellationToken).ConfigureAwait(false);
+            
             var url = AkiUrlBuilder.NewGame(apiKey, m_usedLanguage, m_usedServerType, m_childMode);
-
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var match = m_regexStartGameResult.Match(content);
             if (!match.Success && match.Groups.Count != 2)
@@ -81,7 +72,7 @@ namespace Akinator.Api.Net
             var url = AkiUrlBuilder.Answer(BuildAnswerRequest(answer), m_usedLanguage, m_usedServerType);
 
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(content,
                 new JsonSerializerSettings
@@ -106,7 +97,7 @@ namespace Akinator.Api.Net
             var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
 
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var result = JsonConvert.DeserializeObject<BaseResponse<Question>>(content,
                 new JsonSerializerSettings
@@ -150,7 +141,7 @@ namespace Akinator.Api.Net
 
             var hallOfFameRequestUrl = AkiUrlBuilder.MapHallOfFame(m_usedLanguage);
             var response = await m_webClient.GetAsync(hallOfFameRequestUrl, cancellationToken).ConfigureAwait(false);
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var data = XmlConverter.ToClass<HallOfFame>(content);
             return ToHallOfFameEntry(data.Awards.Award);
         }
@@ -161,7 +152,7 @@ namespace Akinator.Api.Net
 
             var url = AkiUrlBuilder.GetGuessUrl(BuildGuessRequest(), m_usedLanguage, m_usedServerType);
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var result = JsonConvert.DeserializeObject<BaseResponse<Guess>>(content,
                 new JsonSerializerSettings
@@ -195,9 +186,9 @@ namespace Akinator.Api.Net
         public bool GuessIsDue(Platform platform = Platform.Android) =>
             GuessDueChecker.GuessIsDue(CurrentQuestion, m_lastGuessStep, platform);
 
-        private async Task<ApiKey> GetSession()
+        private async Task<ApiKey> GetSession(CancellationToken cancellationToken)
         {
-            var response = await m_webClient.GetAsync("https://en.akinator.com/game").ConfigureAwait(false);
+            var response = await m_webClient.GetAsync("https://en.akinator.com/game", cancellationToken).ConfigureAwait(false);
             if (response?.StatusCode != HttpStatusCode.OK)
             {
                 throw new InvalidOperationException("Cannot connect to Akinator.com");
