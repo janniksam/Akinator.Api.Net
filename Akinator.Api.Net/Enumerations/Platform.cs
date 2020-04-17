@@ -4,6 +4,6 @@
     {
         Android = 0,
         Android_Modified = 1,
-        Windows_Phone = 3
+        Windows_Phone = 2
     }
 }

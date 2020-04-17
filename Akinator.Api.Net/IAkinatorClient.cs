@@ -94,6 +94,7 @@ namespace Akinator.Api.Net
         /// Indicates, if Akinator is ready to guess based on a few criterias such as
         /// already answered questions or the probability given by Akinator
         /// </summary>
+        /// <param name="platform">specify the logic varsion of a specific platform</param>
         /// <returns>Indicates whether Akinator is ready to guess or not</returns>
         bool GuessIsDue(Platform platform = Platform.Android);
 
