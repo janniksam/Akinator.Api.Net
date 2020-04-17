@@ -5,7 +5,7 @@ namespace Akinator.Api.Net.Utils
 {
     public static class GuessDueChecker
     {
-        public static bool GuessIsDue(AkinatorQuestion currentQuestion, int lastGuessTakenAtStep, Platform platform)
+        public static bool GuessIsDue(AkinatorQuestion currentQuestion, int lastGuessTakenAtStep, Platform platform = Platform.Android)
         {
             if (currentQuestion is null)
             {
