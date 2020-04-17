@@ -192,8 +192,8 @@ namespace Akinator.Api.Net
 
         public Task<AkinatorHallOfFameEntries[]> GetHallOfFame() => GetHallOfFame(CancellationToken.None);
         
-        public bool GuessIsDue() =>
-            GuessDueChecker.GuessIsDue(CurrentQuestion, m_lastGuessStep);
+        public bool GuessIsDue(Platform platform = Platform.Android) =>
+            GuessDueChecker.GuessIsDue(CurrentQuestion, m_lastGuessStep, platform);
 
         private async Task<ApiKey> GetSession()
         {

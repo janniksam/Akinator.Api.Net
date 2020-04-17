@@ -1,41 +1,82 @@
-﻿using Akinator.Api.Net.Model;
+﻿using Akinator.Api.Net.Enumerations;
+using Akinator.Api.Net.Model;
 
 namespace Akinator.Api.Net.Utils
 {
     public static class GuessDueChecker
     {
-        public static bool GuessIsDue(AkinatorQuestion currentQuestion, int lastGuessTakenAtStep)
+        public static bool GuessIsDue(AkinatorQuestion currentQuestion, int lastGuessTakenAtStep, Platform platform)
         {
             if (currentQuestion is null)
             {
                 return false;
             }
 
-            var stepsTakenSinceLastGuess = currentQuestion.Step - lastGuessTakenAtStep;
-            if (NoMoreQuestions() ||
-                currentQuestion.Step >= 80)
+            switch (platform)
             {
-                return true;
-            }
+                default:
+                case Platform.Android:
+                    {
+                        var stepsTakenSinceLastGuess = currentQuestion.Step - lastGuessTakenAtStep;
+                        if (NoMoreQuestions() ||
+                            currentQuestion.Step >= 80)
+                        {
+                            return true;
+                        }
 
-            if (stepsTakenSinceLastGuess < 5)
-            {
-                return false;
-            }
+                        if (stepsTakenSinceLastGuess < 5)
+                        {
+                            return false;
+                        }
 
-            if (currentQuestion.Step <= 25)
-            {
-                return !(currentQuestion.Progression <= 97.0f);
-            }
+                        if (currentQuestion.Step <= 25)
+                        {
+                            return !(currentQuestion.Progression <= 97.0f);
+                        }
 
-            if (currentQuestion.Progression <= 80.0f && stepsTakenSinceLastGuess < 30)
-            {
-                return false;
-            }
+                        if (currentQuestion.Progression <= 80.0f && stepsTakenSinceLastGuess < 30)
+                        {
+                            return false;
+                        }
 
-            return 80 - currentQuestion.Step > 5;
+                        return 80 - currentQuestion.Step > 5;
+                    }
+                case Platform.Android_Modified:
+                    {
+                        int step = currentQuestion.Step;
+                        int variance = step - lastGuessTakenAtStep;
+                        double progress = currentQuestion.Progression;
+                        if (NoMoreQuestions() || step == 80)
+                        {
+                            return true;
+                        }
+                        if (variance < 5)
+                        {
+                            return false;
+                        }
+                        if (step <= 25)
+                        {
+                            if (progress > 97.0)
+                            {
+                                return true;
+                            }
+                        }
+                        else if (progress >= 80.0 || variance >= 30)
+                        {
+                            if (variance >= 10)
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                case Platform.Windows_Phone:
+                    {
+                        return currentQuestion.Step >= 79 || (currentQuestion.Step - lastGuessTakenAtStep >= 5 && (currentQuestion.Progression >= 97f || currentQuestion.Step - lastGuessTakenAtStep == 25) && currentQuestion.Step != 75);
+                    }
+            }
         }
-    
+
         private static bool NoMoreQuestions()
         {
             //todo
