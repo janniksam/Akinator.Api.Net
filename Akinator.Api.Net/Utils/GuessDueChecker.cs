@@ -3,6 +3,9 @@ using Akinator.Api.Net.Model;
 
 namespace Akinator.Api.Net.Utils
 {
+    /// <summary>
+    /// Checks, whether or not Akinator is ready to guess
+    /// </summary>
     public static class GuessDueChecker
     {
         public static bool GuessIsDue(AkinatorQuestion currentQuestion, int lastGuessTakenAtStep, Platform platform = Platform.Android)
@@ -43,9 +46,9 @@ namespace Akinator.Api.Net.Utils
                     }
                 case Platform.Android_Modified:
                     {
-                        int step = currentQuestion.Step;
-                        int variance = step - lastGuessTakenAtStep;
-                        double progress = currentQuestion.Progression;
+                        var step = currentQuestion.Step;
+                        var variance = step - lastGuessTakenAtStep;
+                        var progress = currentQuestion.Progression;
                         if (NoMoreQuestions() || step == 80)
                         {
                             return true;
