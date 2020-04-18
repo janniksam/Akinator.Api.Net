@@ -19,19 +19,17 @@ namespace Akinator.Api.Net
         private readonly Regex m_regexSession = new Regex("var uid_ext_session = '(.*)'\\;\\n.*var frontaddr = '(.*)'\\;");
         private readonly Regex m_regexStartGameResult = new Regex(@"^jQuery3410014644797238627216_\d+\((.+)\)$");
         private readonly AkiWebClient m_webClient;
-        private readonly Language m_usedLanguage;
-        private readonly ServerType m_usedServerType;
+        private readonly IAkinatorServer m_server;
         private readonly bool m_childMode;
         private string m_session;
         private string m_signature;
         private int m_step;
         private int m_lastGuessStep;
 
-        public AkinatorClient(Language language, ServerType serverType, AkinatorUserSession existingSession = null, bool childMode = false)
+        public AkinatorClient(IAkinatorServer server, AkinatorUserSession existingSession = null, bool childMode = false)
         {
             m_webClient = new AkiWebClient();
-            m_usedLanguage = language;
-            m_usedServerType = serverType;
+            m_server = server;
             m_childMode = childMode;
             Attach(existingSession);
         }
@@ -42,7 +40,7 @@ namespace Akinator.Api.Net
 
             var apiKey = await GetSession(cancellationToken).ConfigureAwait(false);
             
-            var url = AkiUrlBuilder.NewGame(apiKey, m_usedLanguage, m_usedServerType, m_childMode);
+            var url = AkiUrlBuilder.NewGame(apiKey, m_server, m_childMode);
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -69,7 +67,7 @@ namespace Akinator.Api.Net
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var url = AkiUrlBuilder.Answer(BuildAnswerRequest(answer), m_usedLanguage, m_usedServerType);
+            var url = AkiUrlBuilder.Answer(BuildAnswerRequest(answer), m_server);
 
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -94,7 +92,7 @@ namespace Akinator.Api.Net
                 return null;
             }
 
-            var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
+            var url = AkiUrlBuilder.UndoAnswer(m_session, m_signature, m_step, m_server);
 
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -114,7 +112,7 @@ namespace Akinator.Api.Net
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var url = AkiUrlBuilder.SearchCharacter(search, m_session, m_signature, m_step, m_usedLanguage, m_usedServerType);
+            var url = AkiUrlBuilder.SearchCharacter(search, m_session, m_signature, m_step, m_server);
 
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -139,7 +137,7 @@ namespace Akinator.Api.Net
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var hallOfFameRequestUrl = AkiUrlBuilder.MapHallOfFame(m_usedLanguage);
+            var hallOfFameRequestUrl = AkiUrlBuilder.MapHallOfFame(m_server);
             var response = await m_webClient.GetAsync(hallOfFameRequestUrl, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var data = XmlConverter.ToClass<HallOfFame>(content);
@@ -150,7 +148,7 @@ namespace Akinator.Api.Net
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var url = AkiUrlBuilder.GetGuessUrl(BuildGuessRequest(), m_usedLanguage, m_usedServerType);
+            var url = AkiUrlBuilder.GetGuessUrl(BuildGuessRequest(), m_server);
             var response = await m_webClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 

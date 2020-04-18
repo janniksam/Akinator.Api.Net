@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Akinator.Api.Net.Enumerations;
@@ -15,9 +17,10 @@ namespace Akinator.Api.Net
         private const string ServerListUrl =
             "https://global3.akinator.com/ws/instances_v2.php?media_id=14&footprint=cd8e6509f3420878e18d75b9831b317f&mode=https";
 
+        private static readonly SemaphoreSlim m_semaphoreSlim = new SemaphoreSlim(1, 1);
         private readonly AkiWebClient m_webClient;
         private List<IAkinatorServer> m_cachedServers;
-
+        
         public AkinatorServerLocator()
         {
             m_webClient = new AkiWebClient();
@@ -27,7 +30,7 @@ namespace Akinator.Api.Net
             CancellationToken cancellationToken = default)
         {
             await EnsureServersAsync(cancellationToken).ConfigureAwait(false);
-
+            
             return m_cachedServers.FirstOrDefault(p =>
                 p.ServerType == serverType &&
                 p.Language == language);
@@ -43,9 +46,17 @@ namespace Akinator.Api.Net
 
         private async Task EnsureServersAsync(CancellationToken cancellationToken)
         {
-            if (m_cachedServers == null)
+            await m_semaphoreSlim.WaitAsync(cancellationToken);
+            try
             {
-                m_cachedServers = await LoadServersAsync(cancellationToken).ConfigureAwait(false);
+                if (m_cachedServers == null)
+                {
+                    m_cachedServers = await LoadServersAsync(cancellationToken).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                m_semaphoreSlim.Release();
             }
         }
 
@@ -54,10 +65,10 @@ namespace Akinator.Api.Net
             var response = await m_webClient.GetAsync(ServerListUrl, cancellationToken).ConfigureAwait(false);
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var serverListRaw = XmlConverter.ToClass<ServerSearchResult>(content);
-            return MapToServerList(serverListRaw);
+            return await MapToServerListAsync(serverListRaw).ConfigureAwait(false);
         }
 
-        private static List<IAkinatorServer> MapToServerList(ServerSearchResult serverListRaw)
+        private async Task<List<IAkinatorServer>> MapToServerListAsync(ServerSearchResult serverListRaw)
         {
             var instancesRaw = serverListRaw?.PARAMETERS?.INSTANCE;
             if (instancesRaw == null)
@@ -70,16 +81,33 @@ namespace Akinator.Api.Net
             {
                 var language = MapLanguage(instanceRaw.LANGUAGE?.LANG_ID);
                 var serverType = MapServerType(instanceRaw.SUBJECT?.SUBJ_ID);
-                var serverUrls = instanceRaw.CANDIDATS?.URL?.ToArray() ?? new string[0];
-                if (serverUrls.Length == 0)
-                {
-                    continue;
-                }
+                var baseId = instanceRaw.BASE_LOGIQUE_ID;
 
-                servers.Add(new AkinatorServer(language, serverType, serverUrls));
+                var serverUrls = new List<string>
+                {
+                    instanceRaw.URL_BASE_WS
+                };
+                serverUrls.AddRange(instanceRaw.CANDIDATS.URL);
+                
+                foreach (var serverUrl in serverUrls)
+                {
+                    if (!await CheckHealth(serverUrl))
+                    {
+                        continue;
+                    }
+
+                    servers.Add(new AkinatorServer(language, serverType, baseId, serverUrl));
+                    break;
+                }
             }
 
             return servers;
+        }
+
+        private async Task<bool> CheckHealth(string serverUrl)
+        {
+            var result = await m_webClient.GetAsync($"{serverUrl}/answer").ConfigureAwait(false);
+            return result.StatusCode == HttpStatusCode.OK;
         }
 
         private static ServerType MapServerType(string serverTypeCode)

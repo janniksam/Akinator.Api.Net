@@ -6,70 +6,35 @@ namespace Akinator.Api.Net.Utils
 {
     internal static class AkiUrlBuilder
     {
-        public static string NewGame(ApiKey apiKey, Language language, ServerType serverType, bool childMode)
+        public static string NewGame(ApiKey apiKey, IAkinatorServer server, bool childMode)
         {
-            var child_switch = String.Empty;
-            var question_filter = String.Empty;
-
-            var server = ServerSelector.GetServerFor(language, serverType);
-            if (string.IsNullOrEmpty(server))
-            {
-                throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
-            }
-
+            var childSwitch = string.Empty;
+            var questionFilter = string.Empty;
             if (childMode)
             {
-                child_switch = "true";
-                question_filter = "cat%3D1";
+                childSwitch = "true";
+                questionFilter = "cat%3D1";
             }
-
+            
             return
-                $"https://en.akinator.com/new_session?callback=jQuery3410014644797238627216_{GetTime()}&urlApiWs={Uri.EscapeDataString("https://" + server)}&player=website-desktop&&partner=1&uid_ext_session={apiKey.SessionUid}&frontaddr={apiKey.FrontAdress.UrlEncode()}&childMod={child_switch}&constraint={Uri.EscapeDataString("ETAT<>'AV'")}&soft_constraint=&question_filter={question_filter}&_={GetTime()}";
+                $"https://en.akinator.com/new_session?callback=jQuery3410014644797238627216_{GetTime()}&urlApiWs={Uri.EscapeDataString(server.ServerUrl)}&player=website-desktop&&partner=1&uid_ext_session={apiKey.SessionUid}&frontaddr={apiKey.FrontAdress.UrlEncode()}&childMod={childSwitch}&constraint={Uri.EscapeDataString("ETAT<>'AV'")}&soft_constraint=&question_filter={questionFilter}&_={GetTime()}";
         }
 
-        public static string MapHallOfFame(Language usedLanguage)
+        public static string MapHallOfFame(IAkinatorServer server)
         {
-            switch (usedLanguage)
-            {
-                case Language.Arabic:
-                {
-                    return "http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=12";
-                }
-                case Language.English:
-                {
-                    return "http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=25";
-                }
-                case Language.German:
-                {
-                    return "http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=5";
-                }
-                case Language.French:
-                {
-                    return "http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id=1";
-                }
-                default:
-                {
-                    throw new NotSupportedException($"The language {usedLanguage} is currently not supporting the hall of fame.");
-                }
-            }
+            return $"http://classement.akinator.com:18666//get_hall_of_fame.php?basel_id={server.BaseId}";
         }
 
         public static string Answer(
             AnswerRequest request,
-            Language language, 
-            ServerType serverType)
+            IAkinatorServer server)
         {
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
-            var server = ServerSelector.GetServerFor(language, serverType);
-            if (string.IsNullOrEmpty(server))
-            {
-                throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
-            }
 
-            var url = $"https://{server}/answer?session={request.Session}&signature={request.Signature}&step={request.Step}&answer={(int)request.Choice}";
+            var url = $"{server.ServerUrl}/answer?session={request.Session}&signature={request.Signature}&step={request.Step}&answer={(int)request.Choice}";
             return url;
         }
 
@@ -77,56 +42,34 @@ namespace Akinator.Api.Net.Utils
             string session,
             string signature,
             int step,
-            Language language,
-            ServerType serverType)
+            IAkinatorServer server)
         {
-            var server = ServerSelector.GetServerFor(language, serverType);
-            if (string.IsNullOrEmpty(server))
-            {
-                throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
-            }
-
-            var url = $"https://{server}/cancel_answer?session={session}&signature={signature}&step={step}&answer=-1";
+            var url = $"{server.ServerUrl}/cancel_answer?session={session}&signature={signature}&step={step}&answer=-1";
             return url;
         }
         
         public static string SearchCharacter(
             string search,
-            string Session,
+            string session,
             string signature,
             int step,
-            Language language,
-            ServerType serverType)
+            IAkinatorServer server)
         {
-            
             var str = search.UrlEncode();
-
-            var server = ServerSelector.GetServerFor(language, serverType);
-            if (string.IsNullOrEmpty(server))
-            {
-                throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
-            }
-
-            var url = $"https://{server}/soundlike_search?session={Session}&signature={signature}&step={step}&name={str}";
+            var url = $"{server.ServerUrl}/soundlike_search?session={session}&signature={signature}&step={step}&name={str}";
             return url;
         }
 
         public static string GetGuessUrl(
             GuessRequest request,
-            Language language, 
-            ServerType serverType)
+            IAkinatorServer server)
         {
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
-            var server = ServerSelector.GetServerFor(language, serverType);
-            if (string.IsNullOrEmpty(server))
-            {
-                throw new InvalidOperationException($"No server does match the language {language} and server type {serverType}.");
-            }
 
-            var url = $"https://{server}/list?session={request.Session}&signature={request.Signature}&step={request.Step}";
+            var url = $"{server.ServerUrl}/list?session={request.Session}&signature={request.Signature}&step={request.Step}";
             return url;
         }
 

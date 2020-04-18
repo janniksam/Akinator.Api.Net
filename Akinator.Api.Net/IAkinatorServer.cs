@@ -10,6 +10,8 @@ namespace Akinator.Api.Net
 
         ServerType ServerType { get; }
 
-        IEnumerable<string> ServerUrls { get; }
+        string BaseId { get; }
+
+        string ServerUrl { get; }
     }
 }

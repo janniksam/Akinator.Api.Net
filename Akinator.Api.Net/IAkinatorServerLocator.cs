@@ -10,6 +10,6 @@ namespace Akinator.Api.Net
     {
         Task<IAkinatorServer> SearchAsync(Language language, ServerType serverType, CancellationToken cancellationToken = default);
         
-        Task<IEnumerable<IAkinatorServer>> SearchAllAsync(Language allLanguage, CancellationToken cancellationToken = default);
+        Task<IEnumerable<IAkinatorServer>> SearchAllAsync(Language Language, CancellationToken cancellationToken = default);
     }
 }
