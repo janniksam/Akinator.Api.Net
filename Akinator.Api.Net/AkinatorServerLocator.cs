@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Akinator.Api.Net.Enumerations;
-using Akinator.Api.Net.Model;
 using Akinator.Api.Net.Model.External;
 using Akinator.Api.Net.Utils;
 

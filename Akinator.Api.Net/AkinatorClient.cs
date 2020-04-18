@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -202,7 +201,7 @@ namespace Akinator.Api.Net
         private static AkinatorQuestion ToAkinatorQuestion(Question question) =>
             new AkinatorQuestion(question.Text, question.Progression, question.Step);
 
-        private AkinatorHallOfFameEntries[] ToHallOfFameEntry(List<Award> awardsAward) =>
+        private static AkinatorHallOfFameEntries[] ToHallOfFameEntry(List<Award> awardsAward) =>
             awardsAward
                 .Select(p => new AkinatorHallOfFameEntries(
                     p.AwardId,

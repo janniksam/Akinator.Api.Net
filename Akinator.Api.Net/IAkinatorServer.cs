@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Akinator.Api.Net.Enumerations;
-using Akinator.Api.Net.Model;
+﻿using Akinator.Api.Net.Enumerations;
 
 namespace Akinator.Api.Net
 {
