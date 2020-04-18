@@ -6,6 +6,6 @@
         Animal = 1,
         Object = 2,
         Movie = 3,
-        Places = 4,
+        Place = 4,
     }
 }

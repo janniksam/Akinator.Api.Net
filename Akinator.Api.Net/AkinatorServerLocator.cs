@@ -122,7 +122,7 @@ namespace Akinator.Api.Net
                 }
                 case "7":
                 {
-                    return ServerType.Places;
+                    return ServerType.Place;
                 }
                 case "13":
                 {
@@ -135,7 +135,7 @@ namespace Akinator.Api.Net
                 default:
                 {
                     throw new NotSupportedException(
-                        $"Server-Type with the {serverTypeCode} is currently not supported.");
+                        $"Server-Type with the code {serverTypeCode} is currently not supported.");
                 }
             }
         }
@@ -211,7 +211,7 @@ namespace Akinator.Api.Net
                 default:
                 {
                     throw new NotSupportedException(
-                        $"Language with the {languageCode} is currently not supported.");
+                        $"Language with the code {languageCode} is currently not supported.");
                 }
             }
         }
