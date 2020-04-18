@@ -2,6 +2,7 @@ using Akinator.Api.Net.Enumerations;
 using Akinator.Api.Net.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +24,9 @@ namespace Akinator.Api.Net.Tests
         [TestMethod]
         public async Task SimpleWorkflowTest_AllLanguages()
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             var allLanguages = Enum.GetValues(typeof(Language)).Cast<Language>();
             await allLanguages.ForEachAsync(4, async language =>
             {
@@ -31,6 +35,7 @@ namespace Akinator.Api.Net.Tests
                 {
                     try
                     {
+                        Console.WriteLine($"Testing - Language {language}, Type {server.ServerType} - STARTED");
                         using IAkinatorClient client = new AkinatorClient(server);
                         await client.StartNewGame();
                         while (true)
@@ -56,8 +61,14 @@ namespace Akinator.Api.Net.Tests
                     {
                         Assert.Fail(e.ToString());
                     }
+                    finally
+                    {
+                        Console.WriteLine($"Testing - Language {language}, Type {server.ServerType} - DONE");
+                    }
                 }
             });
+
+            Console.WriteLine($"Test done. Took {stopwatch.Elapsed.TotalSeconds} seconds.");
         }
 
         [TestMethod]
