@@ -152,6 +152,10 @@ namespace Akinator.Api.Net
                 {
                     return Language.Chinese;
                 }
+                case "nl":
+                {
+                    return Language.Dutch;
+                }
                 case "en":
                 {
                     return Language.English;
@@ -170,7 +174,7 @@ namespace Akinator.Api.Net
                 }
                 case "il":
                 {
-                    return Language.Israel;
+                    return Language.Israeli;
                 }
                 case "it":
                 {
@@ -178,15 +182,11 @@ namespace Akinator.Api.Net
                 }
                 case "jp":
                 {
-                    return Language.Japan;
+                    return Language.Japanese;
                 }
                 case "kr":
                 {
                     return Language.Korean;
-                }
-                case "nl":
-                {
-                    return Language.Netherlands;
                 }
                 case "pl":
                 {
