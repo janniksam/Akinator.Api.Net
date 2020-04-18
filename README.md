@@ -1,6 +1,6 @@
 # Akinator API for .NET Standard 1.4
 
-This is an improved async version of the Akinator API, written for .NET Standard 1.4
+This is an improved async version of the Akinator Api, written for .NET Standard 1.4
 
 [![Build status master](https://ci.appveyor.com/api/projects/status/al1pxhaokdi8ymqe?svg=true&passingText=master%20-%20passing&failingText=master%20-%20failing&pendingText=master%20-%20pending)](https://ci.appveyor.com/project/janniksam/Akinator-Api-Net) 
 [![NuGet version](https://badge.fury.io/nu/Akinator.Api.Net.svg)](https://badge.fury.io/nu/Akinator.Api.Net)
@@ -8,30 +8,48 @@ This is an improved async version of the Akinator API, written for .NET Standard
 - Inspired by: https://github.com/davidsl4/AkiNet (not working anymore)
 - Ported from: https://github.com/jgoralcz/aki-api/ (NodeJS implementation)
 
-## Supported servers
+## Languages
 
-This is a WIP project and in a very early stage. Currently only some servers are supported:
+As of April 2020, 16 languages are supported by the Api-Client:
 
-| Language | Servers |
-| --- | --- |
-| Arabic | Person |
-| English | Animal, Object, Person, Movie |
-| French | Animal, Object, Person, Movie |
-| German | Person, Animal |
-| Italian | Animal, Person |
-| Russian | Person |
-| Spanish | Animal, Person |
+- Arabic
+- Chinese
+- English
+- French
+- German
+- Indonesian
+- Israel
+- Italian
+- Japan
+- Korean
+- Netherlands
+- Polski
+- Portuguese
+- Russian
+- Spanish
+- Turkish
 
-All the other servers are coming later or if someone requests it. They are not hard to add anyways, so feel free to make a pull request.
+Further more there are five different server types to choose from. Not every language does support every server type:
 
-## Known issues
+- Person
+- Animal
+- Object
+- Movie
+- Place
 
-- Not all servers are currently supported (see https://github.com/janniksam/Akinator.Api.Net/issues/11).
+Other languages and server-types will be added, as soon as Akinator is starting to support them.
 
 ## Basic usage
 
 ```cs
-using (var client = new AkinatorClient(Language.German, ServerType.Person))
+// We will search for a german person server to play on.
+// The initial search will take a few seconds, because it loads every server-url and 
+// performs a health check for each possible server combination it can find.
+var serverLocator = new AkinatorServerLocator(); 
+var server = await serverLocator.SearchAsync(Language.German, ServerType.Person);
+
+// Opening
+using (var client = new AkinatorClient(server))
 {
    // Start a new game
    var question = await client.StartNewGame(); 
