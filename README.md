@@ -14,15 +14,15 @@ As of April 2020, 16 languages are supported by the Api-Client:
 
 - Arabic
 - Chinese
+- Dutch
 - English
 - French
 - German
 - Indonesian
-- Israel
+- Israeli
 - Italian
-- Japan
+- Japanese
 - Korean
-- Netherlands
 - Polski
 - Portuguese
 - Russian
