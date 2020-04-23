@@ -27,7 +27,7 @@ namespace Akinator.Api.Net.Tests
             stopwatch.Start();
 
             var allLanguages = Enum.GetValues(typeof(Language)).Cast<Language>();
-            foreach (var language in allLanguages)
+            var tasks = allLanguages.AsParallel().Select(async language =>
             {
                 var elapsedLanguage = stopwatch.ElapsedMilliseconds;
                 var servers = await m_serverLocator.SearchAllAsync(language).ConfigureAwait(false);
@@ -69,7 +69,9 @@ namespace Akinator.Api.Net.Tests
 
                 elapsedLanguage = stopwatch.ElapsedMilliseconds - elapsedLanguage;
                 Console.WriteLine($"Took: {elapsedLanguage}ms");
-            }
+            });
+
+            await Task.WhenAll(tasks);
 
             Console.WriteLine($"Test done. Took {stopwatch.Elapsed.TotalSeconds}s.");
         }
