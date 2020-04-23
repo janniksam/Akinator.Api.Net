@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;;netstandard1.4</TargetFrameworks>
     <Title>Akinator API .NET</Title>
-    <Description>Akinator API written .NET Standard 1.4</Description>
+    <Description>Akinator Api for .NET</Description>
     <Authors>janniksam</Authors>
     <Company>janniksam</Company>
     <PackageProjectUrl>https://github.com/janniksam/Akinator.Api.Net</PackageProjectUrl>

@@ -1,6 +1,6 @@
-# Akinator API for .NET Standard 1.4
+# Akinator Api for .NET
 
-This is an improved async version of the Akinator Api, written for .NET Standard 1.4
+This is an improved async version of the Akinator Api, written for .NET Standard 1.4 and .NET 2.0
 
 [![Build status master](https://ci.appveyor.com/api/projects/status/al1pxhaokdi8ymqe?svg=true&passingText=master%20-%20passing&failingText=master%20-%20failing&pendingText=master%20-%20pending)](https://ci.appveyor.com/project/janniksam/Akinator-Api-Net) 
 [![NuGet version](https://badge.fury.io/nu/Akinator.Api.Net.svg)](https://badge.fury.io/nu/Akinator.Api.Net)
@@ -43,12 +43,9 @@ Other languages and server-types will be added, as soon as Akinator is starting 
 
 ```cs
 // We will search for a german person server to play on.
-// The initial search will take a few seconds, because it loads every server-url and 
-// performs a health check for each possible server combination it can find.
 var serverLocator = new AkinatorServerLocator(); 
 var server = await serverLocator.SearchAsync(Language.German, ServerType.Person);
 
-// Opening
 using (var client = new AkinatorClient(server))
 {
    // Start a new game
