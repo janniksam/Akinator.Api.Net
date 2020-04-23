@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Akinator.Api.Net.Tests.Extensions;
 
 namespace Akinator.Api.Net.Tests
 {
@@ -28,8 +27,9 @@ namespace Akinator.Api.Net.Tests
             stopwatch.Start();
 
             var allLanguages = Enum.GetValues(typeof(Language)).Cast<Language>();
-            await allLanguages.ForEachAsync(4, async language =>
+            foreach (var language in allLanguages)
             {
+                var elapsedLanguage = stopwatch.ElapsedMilliseconds;
                 var servers = await m_serverLocator.SearchAllAsync(language).ConfigureAwait(false);
                 foreach (var server in servers)
                 {
@@ -66,9 +66,12 @@ namespace Akinator.Api.Net.Tests
                         Console.WriteLine($"Testing - Language {language}, Type {server.ServerType} - DONE");
                     }
                 }
-            });
 
-            Console.WriteLine($"Test done. Took {stopwatch.Elapsed.TotalSeconds} seconds.");
+                elapsedLanguage = stopwatch.ElapsedMilliseconds - elapsedLanguage;
+                Console.WriteLine($"Took: {elapsedLanguage}ms");
+            }
+
+            Console.WriteLine($"Test done. Took {stopwatch.Elapsed.TotalSeconds}s.");
         }
 
         [TestMethod]
