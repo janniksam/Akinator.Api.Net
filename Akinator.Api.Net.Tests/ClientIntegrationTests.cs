@@ -2,6 +2,7 @@ using Akinator.Api.Net.Enumerations;
 using Akinator.Api.Net.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,416 +12,76 @@ namespace Akinator.Api.Net.Tests
     [TestClass]
     public class ClientIntegrationTests
     {
-        [TestMethod]
-        public async Task SimpleWorkflowTest_Arabic_Person()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.Arabic, ServerType.Person))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
+        private static IAkinatorServerLocator m_serverLocator;
 
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
+        [ClassInitialize]
+        public static void Initialize(TestContext context)
+        {
+            m_serverLocator = new AkinatorServerLocator();
         }
 
         [TestMethod]
-        public async Task SimpleWorkflowTest_English_Animal()
+        public async Task SimpleWorkflowTest_AllLanguages()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Animal))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
 
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
+            var allLanguages = Enum.GetValues(typeof(Language)).Cast<Language>();
+            var tasks = allLanguages.AsParallel().Select(async language =>
+            {
+                var elapsedLanguage = stopwatch.ElapsedMilliseconds;
+                var servers = await m_serverLocator.SearchAllAsync(language).ConfigureAwait(false);
+                foreach (var server in servers)
+                {
+                    try
                     {
-                        Assert.Fail("No guess was found");
+                        Console.WriteLine($"Testing - Language {language}, Type {server.ServerType} - STARTED");
+                        using IAkinatorClient client = new AkinatorClient(server);
+                        await client.StartNewGame();
+                        while (true)
+                        {
+                            var _ = await client.Answer(AnswerOptions.Yes).ConfigureAwait(false);
+                            if (!client.GuessIsDue())
+                            {
+                                continue;
+                            }
+
+                            var guess = await client.GetGuess().ConfigureAwait(false);
+                            if (!guess.Any())
+                            {
+                                Assert.Fail("No guess was found");
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        break;
+                        Assert.Fail(e.ToString());
+                    }
+                    finally
+                    {
+                        Console.WriteLine($"Testing - Language {language}, Type {server.ServerType} - DONE");
                     }
                 }
-            }
-        }
 
-        [TestMethod]
-        public async Task SimpleWorkflowTest_English_Object()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Animal))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
+                elapsedLanguage = stopwatch.ElapsedMilliseconds - elapsedLanguage;
+                Console.WriteLine($"Took: {elapsedLanguage}ms");
+            });
 
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
+            await Task.WhenAll(tasks);
 
-        [TestMethod]
-        public async Task SimpleWorkflowTest_English_Person()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_English_Movie()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Movie))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_French_Animal()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.French, ServerType.Animal))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_French_Object()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.French, ServerType.Animal))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_French_Person()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.French, ServerType.Person))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_French_Movie()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.French, ServerType.Movie))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_German_Person()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.German, ServerType.Person))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_Italian_Animal()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.Italian, ServerType.Animal))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_Italian_Person()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.Italian, ServerType.Person))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_Russian_Person()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.Russian, ServerType.Person))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_Spanish_Animal()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.Spanish, ServerType.Animal))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task SimpleWorkflowTest_Spanish_Person()
-        {
-            using (IAkinatorClient client = new AkinatorClient(Language.Spanish, ServerType.Person))
-            {
-                var question = await client.StartNewGame();
-                while (true)
-                {
-                    var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                    if (!client.GuessIsDue())
-                    {
-                        continue;
-                    }
-
-                    var guess = await client.GetGuess();
-                    if (!guess.Any())
-                    {
-                        Assert.Fail("No guess was found");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
+            Console.WriteLine($"Test done. Took {stopwatch.Elapsed.TotalSeconds}s.");
         }
 
         [TestMethod]
         [ExpectedException(typeof(OperationCanceledException))]
         public async Task StartNewGameThrowsExceptionOnCancelled()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            var server = await m_serverLocator.SearchAsync(Language.English, ServerType.Person).ConfigureAwait(false);
+            using (IAkinatorClient client = new AkinatorClient(server))
             {
                 var src = new CancellationTokenSource();
                 var cancellationToken = src.Token;
@@ -436,7 +97,8 @@ namespace Akinator.Api.Net.Tests
         [ExpectedException(typeof(OperationCanceledException))]
         public async Task AnswerThrowsExceptionOnCancelled()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            var server = await m_serverLocator.SearchAsync(Language.English, ServerType.Person).ConfigureAwait(false);
+            using (IAkinatorClient client = new AkinatorClient(server))
             {
                 var src = new CancellationTokenSource();
                 var cancellationToken = src.Token;
@@ -452,7 +114,8 @@ namespace Akinator.Api.Net.Tests
         [ExpectedException(typeof(OperationCanceledException))]
         public async Task UndoAnswerThrowsExceptionOnCancelled()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            var server = await m_serverLocator.SearchAsync(Language.English, ServerType.Person).ConfigureAwait(false);
+            using (IAkinatorClient client = new AkinatorClient(server))
             {
                 var src = new CancellationTokenSource();
                 var cancellationToken = src.Token;
@@ -469,7 +132,8 @@ namespace Akinator.Api.Net.Tests
         [ExpectedException(typeof(OperationCanceledException))]
         public async Task GetGuessThrowsExceptionOnCancelled()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            var server = await m_serverLocator.SearchAsync(Language.English, ServerType.Person).ConfigureAwait(false);
+            using (IAkinatorClient client = new AkinatorClient(server))
             {
                 var src = new CancellationTokenSource();
                 var cancellationToken = src.Token;
@@ -485,7 +149,8 @@ namespace Akinator.Api.Net.Tests
         [ExpectedException(typeof(OperationCanceledException))]
         public async Task GetHallOfFameThrowsExceptionOnCancelled()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            var server = await m_serverLocator.SearchAsync(Language.English, ServerType.Person).ConfigureAwait(false);
+            using (IAkinatorClient client = new AkinatorClient(server))
             {
                 var src = new CancellationTokenSource();
                 var cancellationToken = src.Token;
@@ -502,7 +167,8 @@ namespace Akinator.Api.Net.Tests
         [ExpectedException(typeof(OperationCanceledException))]
         public async Task SearchCharacterThrowsExceptionOnCancelled()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            var server = await m_serverLocator.SearchAsync(Language.English, ServerType.Person).ConfigureAwait(false);
+            using (IAkinatorClient client = new AkinatorClient(server))
             {
                 var src = new CancellationTokenSource();
                 var cancellationToken = src.Token;
@@ -519,7 +185,8 @@ namespace Akinator.Api.Net.Tests
         {
             AkinatorUserSession userSessionFromFirstClient;
 
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
+            var server = await m_serverLocator.SearchAsync(Language.English, ServerType.Person).ConfigureAwait(false);
+            using (IAkinatorClient client = new AkinatorClient(server))
             {
                 var question = await client.StartNewGame();
                 Assert.AreEqual(0, question.Step);
@@ -530,7 +197,7 @@ namespace Akinator.Api.Net.Tests
                 userSessionFromFirstClient = client.GetUserSession();
             }
 
-            using (IAkinatorClient newClient = new AkinatorClient(Language.English, ServerType.Person, userSessionFromFirstClient))
+            using (IAkinatorClient newClient = new AkinatorClient(server, userSessionFromFirstClient))
             {
                 var question = await newClient.Answer(AnswerOptions.Yes);
                 Assert.AreEqual(2, question.Step);
@@ -541,70 +208,74 @@ namespace Akinator.Api.Net.Tests
         [TestMethod]
         public async Task UndoWorksAsExpected()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
-            {
-                var questionStart = await client.StartNewGame();
-                Assert.AreEqual(0, questionStart.Step);
+            var server = await m_serverLocator.SearchAsync(Language.English, ServerType.Person).ConfigureAwait(false);
+            
+            using IAkinatorClient client = new AkinatorClient(server);
+            
+            var questionStart = await client.StartNewGame();
+            Assert.AreEqual(0, questionStart.Step);
 
-                var question1 = await client.Answer(AnswerOptions.Yes);
-                Assert.AreEqual(1, question1.Step);
+            var question1 = await client.Answer(AnswerOptions.Yes);
+            Assert.AreEqual(1, question1.Step);
 
-                var question2 = await client.Answer(AnswerOptions.Yes);
-                Assert.AreEqual(2, question2.Step);
+            var question2 = await client.Answer(AnswerOptions.Yes);
+            Assert.AreEqual(2, question2.Step);
 
-                var questionPrevious = await client.UndoAnswer();
-                Assert.AreEqual(1, questionPrevious.Step);
-                Assert.AreEqual(question1.Text, questionPrevious.Text);
-            }
+            var questionPrevious = await client.UndoAnswer();
+            Assert.AreEqual(1, questionPrevious.Step);
+            Assert.AreEqual(question1.Text, questionPrevious.Text);
         }
         
         [TestMethod]
         public async Task ChildModeDoesNotThrowAnyExceptions()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person, childMode: true))
-            {
-                var questionStart = await client.StartNewGame(); 
-                var nextQuestion = await client.Answer(AnswerOptions.Yes);
-                Assert.AreEqual(0, questionStart.Step);
-                Assert.AreEqual(1, nextQuestion.Step);
-            }
+            var server = await m_serverLocator.SearchAsync(Language.English, ServerType.Person).ConfigureAwait(false);
+            
+            using IAkinatorClient client = new AkinatorClient(server, childMode: true);
+            var questionStart = await client.StartNewGame(); 
+            var nextQuestion = await client.Answer(AnswerOptions.Yes);
+            Assert.AreEqual(0, questionStart.Step);
+            Assert.AreEqual(1, nextQuestion.Step);
         }
 
         [TestMethod]
         public async Task CurrentQuestionReturnsCurrentQuestion()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
-            {
-                var questionStart = await client.StartNewGame();
-                Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
+            var server = await m_serverLocator.SearchAsync(Language.English, ServerType.Person).ConfigureAwait(false);
+            
+            using IAkinatorClient client = new AkinatorClient(server);
+            
+            var questionStart = await client.StartNewGame();
+            Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
 
-                questionStart = await client.Answer(AnswerOptions.Yes);
-                Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
+            questionStart = await client.Answer(AnswerOptions.Yes);
+            Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
 
-                questionStart = await client.Answer(AnswerOptions.Yes);
-                Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
+            questionStart = await client.Answer(AnswerOptions.Yes);
+            Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
 
-                questionStart = await client.UndoAnswer();
-                Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
-            }
+            questionStart = await client.UndoAnswer();
+            Assert.AreEqual(questionStart.Text, client.CurrentQuestion.Text);
         }
 
         [TestMethod]
         public async Task SearchCharacter_ReturnsValidCharactersForASearchTerm()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.English, ServerType.Person))
-            {
-                await client.StartNewGame();
-                var chars = await client.SearchCharacter("Brat Pitt");
-                Assert.IsTrue(chars.Any(p => p.Name.Contains("brat pitt", StringComparison.InvariantCultureIgnoreCase)));
-            }
+            var server = await m_serverLocator.SearchAsync(Language.English, ServerType.Person).ConfigureAwait(false);
+            using IAkinatorClient client = new AkinatorClient(server);
+            await client.StartNewGame();
+            var chars = await client.SearchCharacter("Brat Pitt");
+            Assert.IsTrue(chars.Any(p => p.Name.Contains("brat pitt", StringComparison.InvariantCultureIgnoreCase)));
         }
 
         [TestMethod]
-        public async Task HallOfFameGivesValidResponse()
+        public async Task HallOfFameGivesValidResponseForEveryLanguage()
         {
-            using (IAkinatorClient client = new AkinatorClient(Language.German, ServerType.Person))
+            var allLanguages = Enum.GetValues(typeof(Language)).Cast<Language>();
+            foreach (var language in allLanguages)
             {
+                var server = await m_serverLocator.SearchAsync(language, ServerType.Person).ConfigureAwait(false);
+                using IAkinatorClient client = new AkinatorClient(server);
                 var result = await client.GetHallOfFame();
                 Assert.IsNotNull(result);
                 Assert.AreNotEqual(0, result.Length);

@@ -13,35 +13,16 @@ namespace Akinator.Api.Net
         /// <summary>
         /// Starts a new Akinator game
         /// </summary>
-        /// <returns>The first question</returns>
-        Task<AkinatorQuestion> StartNewGame();
-
-        /// <summary>
-        /// Starts a new Akinator game
-        /// </summary>
         /// <param name="cancellationToken">Cancellation Token</param>
         /// <returns>The first question</returns>
-        Task<AkinatorQuestion> StartNewGame(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Answers the question given previously by Akinator
-        /// </summary>
-        /// <param name="answer">The answer you want to give</param>
-        /// <returns>The next question</returns>
-        Task<AkinatorQuestion> Answer(AnswerOptions answer);
-
-        /// <summary>
-        /// Undoes the previously given answer
-        /// </summary>
-        /// <returns>The previous question</returns>
-        Task<AkinatorQuestion> UndoAnswer();
+        Task<AkinatorQuestion> StartNewGame(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Undoes the previously given answer
         /// </summary>
         /// <param name="cancellationToken">Cancellation Token</param>
         /// <returns>The previous question</returns>
-        Task<AkinatorQuestion> UndoAnswer(CancellationToken cancellationToken);
+        Task<AkinatorQuestion> UndoAnswer(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Answers the question given previously by Akinator
@@ -49,27 +30,14 @@ namespace Akinator.Api.Net
         /// <param name="answer">The answer you want to give</param>
         /// <param name="cancellationToken">Cancellation Token</param>
         /// <returns>The next question</returns>
-        Task<AkinatorQuestion> Answer(AnswerOptions answer, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Prompts Akinator to take a guess
-        /// </summary>
-        /// <returns>The most probable guesses Akinator can come up with</returns>
-        Task<AkinatorGuess[]> GetGuess();
+        Task<AkinatorQuestion> Answer(AnswerOptions answer, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Prompts Akinator to take a guess
         /// </summary>
         /// <param name="cancellationToken">Cancellation Token</param>
         /// <returns>The most probable guesses Akinator can come up with</returns>
-        Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Searches Akinator for a specific character (person, object, animal, movie)
-        /// </summary>
-        /// <param name="search">Searchterm to be searched for</param>
-        /// <returns>The list of characters, Akinator comes up with</returns>
-        Task<AkinatorGuess[]> SearchCharacter(string search);
+        Task<AkinatorGuess[]> GetGuess(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Searches Akinator for a specific character (person, object, animal, movie)
@@ -77,18 +45,13 @@ namespace Akinator.Api.Net
         /// <param name="search">Searchterm to be searched for</param>
         /// <param name="cancellationToken">Cancellation Token</param>
         /// <returns>The list of characters, Akinator comes up with</returns>
-        Task<AkinatorGuess[]> SearchCharacter(string search, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Get the hall of fame
-        /// </summary>
-        Task<AkinatorHallOfFameEntries[]> GetHallOfFame();
+        Task<AkinatorGuess[]> SearchCharacter(string search, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get the hall of fame
         /// </summary>
         /// <param name="cancellationToken">Cancellation Token</param>
-        Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken);
+        Task<AkinatorHallOfFameEntries[]> GetHallOfFame(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Indicates, if Akinator is ready to guess based on a few criterias such as

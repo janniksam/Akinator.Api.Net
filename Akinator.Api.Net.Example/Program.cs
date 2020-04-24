@@ -17,8 +17,9 @@ namespace Akinator.Api.Net.Example
         private async Task Start()
         {
             Console.WriteLine("Starting session...");
-
-            using (IAkinatorClient client = new AkinatorClient(Language.German, ServerType.Person))
+            var serverLocator = new AkinatorServerLocator();
+            var server = await serverLocator.SearchAsync(Language.German, ServerType.Person);
+            using (IAkinatorClient client = new AkinatorClient(server))
             {
                 var question = await client.StartNewGame();
                 var answer = GetAnswerFor(question);
